@@ -8,6 +8,8 @@ import { Icon } from "./ds/Icons";
  * 100% — the verbatim original. We embed the actual source PDF so nothing is
  * lost: every figure, chart and table appears exactly as published.
  */
+const pdfPath = `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/paper.pdf`;
+
 export function OriginalMode({ paper }: { paper: Paper }) {
   return (
     <div style={{ flex: 1, display: "flex", flexDirection: "column", minHeight: 0 }}>
@@ -18,17 +20,17 @@ export function OriginalMode({ paper }: { paper: Paper }) {
             {paper.meta.title}
           </span>
         </div>
-        <a href="/paper.pdf" target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none" }}>
+        <a href={pdfPath} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none" }}>
           <Button variant="secondary" size="sm" icon={<Icon name="fileText" size={15} />}>Open PDF in new tab</Button>
         </a>
       </div>
 
       {/* the real paper, verbatim — figures, charts, tables included */}
-      <object data="/paper.pdf#view=FitH" type="application/pdf" style={{ flex: 1, width: "100%", minHeight: "78vh", border: "none", background: "var(--surface-sunken)" }}>
-        <iframe src="/paper.pdf" title="Original paper (PDF)" style={{ flex: 1, width: "100%", height: "82vh", border: "none" }} />
+      <object data={`${pdfPath}#view=FitH`} type="application/pdf" style={{ flex: 1, width: "100%", minHeight: "78vh", border: "none", background: "var(--surface-sunken)" }}>
+        <iframe src={pdfPath} title="Original paper (PDF)" style={{ flex: 1, width: "100%", height: "82vh", border: "none" }} />
         <div style={{ padding: "var(--space-8)", textAlign: "center", color: "var(--text-muted)" }}>
           Your browser can't show the PDF inline.{" "}
-          <a href="/paper.pdf" target="_blank" rel="noopener noreferrer" style={{ color: "var(--accent)" }}>Open it in a new tab.</a>
+          <a href={pdfPath} target="_blank" rel="noopener noreferrer" style={{ color: "var(--accent)" }}>Open it in a new tab.</a>
         </div>
       </object>
     </div>
