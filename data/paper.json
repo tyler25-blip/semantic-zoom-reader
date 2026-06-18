@@ -1,0 +1,2895 @@
+{
+  "meta": {
+    "title": "Rethinking Human-AI Collaboration in Complex Medical Decision Making: A Case Study in Sepsis Diagnosis",
+    "authors": "Zhang, Yu, Xu, Yin, Lu, Yao, Tory, Padilla, Caterino, Zhang & Wang",
+    "venue": "CHI '24",
+    "badges": [
+      "Human-AI Collaboration",
+      "Open Access"
+    ]
+  },
+  "domains": [
+    {
+      "id": "clinical",
+      "name": "Clinical medicine",
+      "blurb": "Sepsis, blood culture, vitals & labs, EHR, the ER/ICU workflow."
+    },
+    {
+      "id": "ml",
+      "name": "Machine learning & AI",
+      "blurb": "Neural networks, LSTM, attention, prediction, explainability (XAI)."
+    },
+    {
+      "id": "hci",
+      "name": "HCI research methods",
+      "blurb": "Interview studies, qualitative coding, design probes, human-AI teaming."
+    },
+    {
+      "id": "stats",
+      "name": "Statistics & evaluation",
+      "blurb": "Sensitivity, false positives, AUC, confidence intervals, entropy."
+    }
+  ],
+  "sections": [
+    {
+      "id": "A",
+      "eyebrow": "The problem",
+      "heading": "The smartest doctor in the building keeps getting ignored"
+    },
+    {
+      "id": "B",
+      "eyebrow": "Why it's hard",
+      "heading": "The hardest call on the ward"
+    },
+    {
+      "id": "C",
+      "eyebrow": "The incumbent",
+      "heading": "Five reasons nobody trusts the alarm"
+    },
+    {
+      "id": "D",
+      "eyebrow": "The reframe",
+      "heading": "Get out of the judge's seat"
+    },
+    {
+      "id": "E",
+      "eyebrow": "The build",
+      "heading": "Meet SepsisLab"
+    },
+    {
+      "id": "F",
+      "eyebrow": "Under the hood",
+      "heading": "How the engine actually works"
+    },
+    {
+      "id": "G",
+      "eyebrow": "The verdict",
+      "heading": "Did it work?"
+    },
+    {
+      "id": "H",
+      "eyebrow": "The bigger picture",
+      "heading": "Why it travels beyond sepsis"
+    }
+  ],
+  "skeleton": [
+    {
+      "id": "s1",
+      "section": "A",
+      "break": true,
+      "text": "Walk into almost any large hospital today and there is an artificial intelligence quietly watching every patient, trained to catch one of medicine's deadliest emergencies before a human can.",
+      "source": [
+        "p_abs"
+      ],
+      "tags": [
+        "argument-role"
+      ]
+    },
+    {
+      "id": "s2",
+      "section": "A",
+      "text": "On paper it is brilliant. In practice, the doctors have learned to tune it out.",
+      "source": [
+        "p_abs"
+      ],
+      "tags": [
+        "argument-role"
+      ]
+    },
+    {
+      "id": "s3",
+      "section": "A",
+      "text": "This study is about why that happens — and what to do instead.",
+      "source": [
+        "p_abs"
+      ],
+      "tags": [
+        "argument-role"
+      ]
+    },
+    {
+      "id": "s4",
+      "section": "A",
+      "break": true,
+      "text": "The researchers zoom in on sepsis, the body's catastrophic overreaction to an infection, which can turn a stable patient into a dying one within hours.",
+      "source": [
+        "p_sepsis_common"
+      ],
+      "tags": [
+        "vocab",
+        "clinical"
+      ]
+    },
+    {
+      "id": "s5",
+      "section": "A",
+      "text": "The warning system most hospitals already own was built to flag it; the six clinicians here had essentially stopped believing it.",
+      "source": [
+        "p_esm",
+        "p_belated"
+      ],
+      "tags": [
+        "background"
+      ]
+    },
+    {
+      "id": "s6",
+      "section": "A",
+      "break": true,
+      "text": "The authors' diagnosis is blunt: the AI was pointed at the wrong moment.",
+      "source": [
+        "p_challenger"
+      ],
+      "tags": [
+        "argument-role"
+      ]
+    },
+    {
+      "id": "s7",
+      "section": "A",
+      "text": "It tried to hand down the final verdict, when what doctors needed was a partner for the uncertain middle of the decision.",
+      "source": [
+        "p_challenger"
+      ],
+      "tags": [
+        "argument-role"
+      ]
+    },
+    {
+      "id": "s8",
+      "section": "A",
+      "text": "So the team rebuilt it — a tool called SepsisLab, designed to assist rather than judge — and put it back in front of those same clinicians.",
+      "source": [
+        "p_abs"
+      ],
+      "tags": [
+        "argument-role"
+      ]
+    },
+    {
+      "id": "s9",
+      "section": "B",
+      "break": true,
+      "text": "To see why this matters, you have to understand how merciless sepsis is.",
+      "source": [
+        "p_sepsis_common"
+      ],
+      "tags": [
+        "clinical"
+      ]
+    },
+    {
+      "id": "s10",
+      "section": "B",
+      "text": "It strikes roughly 48.9 million people a year and kills around 11 million of them, which is why catching it early is everything.",
+      "source": [
+        "p_sepsis_common"
+      ],
+      "tags": [
+        "numbers",
+        "clinical"
+      ]
+    },
+    {
+      "id": "s11",
+      "section": "B",
+      "break": true,
+      "text": "Three forces make the call brutal at once: the stakes are life-or-death, the clock is sprinting, and the doctor must commit before the evidence has arrived.",
+      "source": [
+        "p_challenging",
+        "p_belated"
+      ],
+      "tags": [
+        "concept-density"
+      ]
+    },
+    {
+      "id": "s12",
+      "section": "B",
+      "text": "Reading a scan is hard, but the answer is at least somewhere in the image; a sepsis call asks two questions at once — does this patient have sepsis right now, and are they about to?",
+      "source": [
+        "p_challenging"
+      ],
+      "tags": [
+        "concept-density",
+        "clinical"
+      ]
+    },
+    {
+      "id": "s13",
+      "section": "B",
+      "text": "The one test that settles it, a blood culture, takes at least eight hours to come back — an eternity when a patient can crash in less.",
+      "source": [
+        "p_challenging"
+      ],
+      "tags": [
+        "clinical",
+        "numbers"
+      ]
+    },
+    {
+      "id": "s14",
+      "section": "B",
+      "break": true,
+      "text": "So in the real world doctors don't wait; they work in four quick steps — form a hunch, gather more data, test it against fresh lab results, then make the call.",
+      "source": [
+        "p_fourstep"
+      ],
+      "tags": [
+        "argument-role"
+      ]
+    },
+    {
+      "id": "s15",
+      "section": "C",
+      "break": true,
+      "text": "Into that pressure cooker drops the incumbent AI, the Epic Sepsis Module.",
+      "source": [
+        "p_esm"
+      ],
+      "tags": [
+        "ml",
+        "clinical"
+      ]
+    },
+    {
+      "id": "s16",
+      "section": "C",
+      "text": "It reads the patient's chart, boils everything down to a single sepsis \"risk score,\" and sounds an alarm the moment that score crosses a line.",
+      "source": [
+        "p_esm"
+      ],
+      "tags": [
+        "ml",
+        "stats"
+      ]
+    },
+    {
+      "id": "s17",
+      "section": "C",
+      "break": true,
+      "text": "To find out why clinicians abandon it, the team ran a formative study — open-ended interviews with six doctors and nurses who live with the tool every day.",
+      "source": [
+        "p_belated"
+      ],
+      "tags": [
+        "hci"
+      ]
+    },
+    {
+      "id": "s18",
+      "section": "C",
+      "text": "Their complaints fell into five buckets, and the first four are brutal.",
+      "source": [
+        "p_belated"
+      ],
+      "tags": [
+        "argument-role"
+      ]
+    },
+    {
+      "id": "s19",
+      "section": "C",
+      "break": true,
+      "text": "It's too late: the alert routinely arrives after the doctor has already spotted the sepsis and started treatment.",
+      "source": [
+        "p_belated"
+      ],
+      "tags": [
+        "clinical"
+      ]
+    },
+    {
+      "id": "s20",
+      "section": "C",
+      "text": "It's too noisy: tuned so low it never misses a case, the alarm is wrong the overwhelming majority of the times it fires, burying ER staff under more than twenty interruptions an hour.",
+      "source": [
+        "p_inaccurate"
+      ],
+      "tags": [
+        "numbers",
+        "stats"
+      ]
+    },
+    {
+      "id": "s21",
+      "section": "C",
+      "text": "It won't explain itself: a black box that could rate an obvious case lower than a subtle one, ignoring the very criteria doctors were trained on.",
+      "source": [
+        "p_explanation"
+      ],
+      "tags": [
+        "ml"
+      ]
+    },
+    {
+      "id": "s22",
+      "section": "C",
+      "text": "And it's useless even when right: a high number never said what to do next, so most people simply ignored it.",
+      "source": [
+        "p_actionable"
+      ],
+      "tags": [
+        "argument-role"
+      ]
+    },
+    {
+      "id": "s23",
+      "section": "C",
+      "break": true,
+      "text": "But the fifth complaint cut deepest: by trying to make the diagnosis itself, the AI had cast itself not as a teammate but as an intimidating competitor.",
+      "source": [
+        "p_challenger"
+      ],
+      "tags": [
+        "argument-role",
+        "hci"
+      ]
+    },
+    {
+      "id": "s24",
+      "section": "D",
+      "break": true,
+      "text": "That reframing is the heart of the paper: the cure isn't a smarter verdict, it's a different job.",
+      "source": [
+        "p_challenger"
+      ],
+      "tags": [
+        "argument-role"
+      ]
+    },
+    {
+      "id": "s25",
+      "section": "D",
+      "text": "Move the AI out of the final-answer seat and into the intermediate steps — the hunch-forming and data-gathering — where doctors genuinely want a hand.",
+      "source": [
+        "p_ds"
+      ],
+      "tags": [
+        "argument-role"
+      ]
+    },
+    {
+      "id": "s26",
+      "section": "D",
+      "break": true,
+      "text": "From that single shift came five design rules: forecast where the risk is heading, explain itself in plain reach, hand over concrete next actions, show how unsure it is, and above all support the middle of the process instead of seizing the end.",
+      "source": [
+        "p_ds"
+      ],
+      "tags": [
+        "concept-density"
+      ]
+    },
+    {
+      "id": "s27",
+      "section": "E",
+      "break": true,
+      "text": "SepsisLab is what those rules look like built into the existing records screen, and it adds three things the old score never had.",
+      "source": [
+        "p_future"
+      ],
+      "tags": [
+        "argument-role"
+      ]
+    },
+    {
+      "id": "s28",
+      "section": "E",
+      "break": true,
+      "text": "First, instead of a single number it draws a trajectory — a line showing where the patient's risk is heading over the next four hours, the forecast continuing past \"now\" as a dashed line.",
+      "source": [
+        "p_future"
+      ],
+      "tags": [
+        "ml",
+        "clinical"
+      ]
+    },
+    {
+      "id": "s29",
+      "section": "E",
+      "text": "Second, it never shows that number naked: a grey band widens around the line wherever the model is unsure, turning raw confidence into honest doubt.",
+      "source": [
+        "p_uncertainty"
+      ],
+      "tags": [
+        "stats",
+        "ml"
+      ]
+    },
+    {
+      "id": "s30",
+      "section": "E",
+      "text": "Third — the part clinicians loved most — it tells you which lab tests to order next, ranked by how much each one would shrink that uncertainty.",
+      "source": [
+        "p_labrec"
+      ],
+      "tags": [
+        "clinical",
+        "ml"
+      ]
+    },
+    {
+      "id": "s31",
+      "section": "E",
+      "break": true,
+      "text": "It will even play what-if: click a test you haven't run, and SepsisLab previews how the prediction would likely move — a counterfactual — before you spend the time and cost of doing it.",
+      "source": [
+        "p_labrec"
+      ],
+      "tags": [
+        "ml",
+        "vocab"
+      ]
+    },
+    {
+      "id": "s32",
+      "section": "F",
+      "break": true,
+      "text": "Beneath the interface, the engine is an LSTM, a neural network built to read a sequence over time — a natural fit for a patient's record, where readings dribble in at irregular hours across a stay.",
+      "source": [
+        "p_lstm"
+      ],
+      "tags": [
+        "ml",
+        "vocab"
+      ]
+    },
+    {
+      "id": "s33",
+      "section": "F",
+      "text": "An attention mechanism lets it cope with the inevitable missing data, and doubles as the explanation: whatever it learns to pay attention to becomes the feature-importance list shown to the doctor.",
+      "source": [
+        "p_lstm"
+      ],
+      "tags": [
+        "ml"
+      ]
+    },
+    {
+      "id": "s34",
+      "section": "F",
+      "break": true,
+      "text": "To gauge its own uncertainty it quietly imagines the missing lab values many times over — a Monte Carlo simulation — and measures how much the answer jumps around.",
+      "source": [
+        "p_mcs"
+      ],
+      "tags": [
+        "ml",
+        "stats"
+      ]
+    },
+    {
+      "id": "s35",
+      "section": "F",
+      "text": "When that wobble, captured as Shannon entropy, climbs too high, the system speaks up and recommends the single lab value that would settle it the most.",
+      "source": [
+        "p_mcs"
+      ],
+      "tags": [
+        "stats",
+        "ml"
+      ]
+    },
+    {
+      "id": "s36",
+      "section": "F",
+      "break": true,
+      "text": "Tested against real ICU records, it nearly matched a model that could see everything, while asking for only about 9.6% more lab tests — and beat the data-starved baseline by roughly 10% in accuracy.",
+      "source": [
+        "p_results"
+      ],
+      "tags": [
+        "numbers",
+        "stats"
+      ]
+    },
+    {
+      "id": "s37",
+      "section": "G",
+      "break": true,
+      "text": "The real test was human: the same six clinicians took SepsisLab for a spin on de-identified cases, then talked it through.",
+      "source": [
+        "p_eval"
+      ],
+      "tags": [
+        "hci"
+      ]
+    },
+    {
+      "id": "s38",
+      "section": "G",
+      "text": "The verdict was warm — pulling the AI out of the verdict seat made it feel less like a rival and more like a collaborator.",
+      "source": [
+        "p_eval"
+      ],
+      "tags": [
+        "hci",
+        "argument-role"
+      ]
+    },
+    {
+      "id": "s39",
+      "section": "G",
+      "break": true,
+      "text": "They liked watching the risk unfold into the future (\"it says the whole picture\"), found the lab suggestions genuinely actionable for once, and said the what-if previews finally let them see the model's reasoning.",
+      "source": [
+        "p_eval"
+      ],
+      "tags": [
+        "argument-role"
+      ]
+    },
+    {
+      "id": "s40",
+      "section": "G",
+      "text": "Their one real worry was dosage: don't drown us in information — hand it over a step at a time.",
+      "source": [
+        "p_eval"
+      ],
+      "tags": [
+        "hci"
+      ]
+    },
+    {
+      "id": "s41",
+      "section": "H",
+      "break": true,
+      "text": "The takeaway reaches past one disease: wherever a decision is high-stakes, deeply uncertain, and racing a clock, AI seems to help most by supporting the process and least by grabbing the conclusion.",
+      "source": [
+        "p_beyond"
+      ],
+      "tags": [
+        "argument-role"
+      ]
+    },
+    {
+      "id": "s42",
+      "section": "H",
+      "text": "The same shape recurs in stroke and heart attacks, in mental-health crises, and even outside medicine in disaster response and business emergencies.",
+      "source": [
+        "p_beyond"
+      ],
+      "tags": [
+        "argument-role"
+      ]
+    },
+    {
+      "id": "s43",
+      "section": "H",
+      "break": true,
+      "text": "The authors don't oversell it: a tool like this can pile on cognitive load, can still be wrong in ways nobody has solved, and lean on it too hard and your own vigilance dulls.",
+      "source": [
+        "p_risks"
+      ],
+      "tags": [
+        "argument-role"
+      ]
+    },
+    {
+      "id": "s44",
+      "section": "H",
+      "text": "And the evidence is early — one hospital, six clinicians, a prototype never wired into the live records system, with a parting hint that doctors and nurses, doing different jobs, may need different tools.",
+      "source": [
+        "p_limits"
+      ],
+      "tags": [
+        "hci"
+      ]
+    }
+  ],
+  "original": [
+    {
+      "id": "p_abs",
+      "label": "Abstract",
+      "text": "Today's AI systems for medical decision support often succeed on benchmark datasets in research papers but fail in real-world deployment. This work focuses on the decision making of sepsis, an acute life-threatening systematic infection that requires an early diagnosis with high uncertainty from the clinician. Our aim is to explore the design requirements for AI systems that can support clinical experts in making better decisions for the early diagnosis of sepsis. The study begins with a formative study investigating why clinical experts abandon an existing AI-powered Sepsis predictive module in their electrical health record (EHR) system. We argue that a human-centered AI system needs to support human experts in the intermediate stages of a medical decision-making process (e.g., generating hypotheses or gathering data), instead of focusing only on the final decision. Therefore, we build SepsisLab based on a state-of-the-art AI algorithm and extend it to predict the future projection of sepsis development, visualize the prediction uncertainty, and propose actionable suggestions (i.e., which additional laboratory tests can be collected) to reduce such uncertainty. Through heuristic evaluation with six clinicians using our prototype system, we demonstrate that SepsisLab enables a promising human-AI collaboration paradigm for the future of AI-assisted sepsis diagnosis and other high-stakes medical decision making."
+    },
+    {
+      "id": "p_sepsis_common",
+      "label": "§2.1 Sepsis Diagnosis",
+      "text": "Sepsis is a common ( 48.9 million patients per year worldwide) yet life-threatening organ dysfunction triggered by a dysregulated response to infection. The development of sepsis is very fast — without a timely diagnosis or proper treatment, a patient might die within a few hours from the initial onset of symptoms."
+    },
+    {
+      "id": "p_challenging",
+      "label": "§1 Introduction",
+      "text": "Compared to other medical decision-making scenarios (e.g., abnormal cell detection in medical imaging) where clinicians make a decision for that particular moment and with all the information they have at hand (e.g., cancer cells present or absent in the image), sepsis diagnosis is particularly challenging because: 1) clinicians need to decide not only whether the patient has sepsis at that moment, but also how likely this patient may develop sepsis in the near future (e.g., in a few hours); 2) they often do not have enough information to support their decision making. For example, the golden standard test for sepsis is the \"blood culture\" test in the Sepsis-3 guidelines. However, it takes at least 8 hours to obtain the result, which would most likely be too late for a patient with sepsis."
+    },
+    {
+      "id": "p_fourstep",
+      "label": "§1 Introduction (4-step workflow)",
+      "text": "Among the four stages of the medical decision-making workflow (1. Generating hypotheses, 2. Gathering data, 3. Testing hypotheses, 4. Making decisions), this AI system is designed to provide support for the final diagnosis stage."
+    },
+    {
+      "id": "p_esm",
+      "label": "§1 Introduction (Epic Sepsis Module)",
+      "text": "One notable effort is that a number of hospitals recently started to adopt a sepsis prediction and alerting module, Epic Sepsis Module (ESM), in their existing Electrical Health Record (EHR) system. The core of this sepsis module is a machine learning algorithm, which can take in a patient's EHR information and other biomarker data at that moment as input and predict a sepsis risk score as output. If the predicted risk score is higher than a threshold, it suggests to human clinicians that a sepsis case presents, and human clinicians can agree, disagree, or dismiss such AI decision-making suggestions."
+    },
+    {
+      "id": "p_belated",
+      "label": "§3.2.1 Belated Sepsis Risk Prediction",
+      "text": "All physicians complain that the current sepsis prediction is too late and thus useless in their decision-making. This is due to the fact that sepsis is a life-threatening disease and can progress very fast. Thus, sepsis diagnosis requires human decision-makers to make a time-sensitive decision at the first encounter with the patients, despite they face huge uncertainty due to the lack of sufficient information about the patients. However, AI prediction must rely on data as input, but at first encounter, many of such data (e.g., vitals or lab results) do not exist or are not digitalized yet."
+    },
+    {
+      "id": "p_inaccurate",
+      "label": "§3.2.2 Inaccurate Sepsis Risk Prediction",
+      "text": "The current algorithm design tends to have an extremely low sensitivity threshold at 13% (i.e., high false positive rate at 87%) to avoid missing any potential sepsis, because sepsis decision making has a patient's life at stake. As a result, participants (P3, P4, P6) reported that they received an overly large volume of false alerts from the sepsis module due to the inaccurate sepsis risk prediction algorithm and the low sensitivity threshold. \"Any system that produces tons of alerts will induce alert fatigue, and people won't pay attention to it ... on average, there are already more than 20 interruptions per hour for an ER physician.\" (P6)"
+    },
+    {
+      "id": "p_explanation",
+      "label": "§3.2.3 Lack of Explanations",
+      "text": "Participants (P1, P4, P5, P6) also mentioned that the current AI-predicted sepsis risk score is hard to interpret. Participants do not understand why an obvious sepsis case has a lower risk score than the score of a less obvious case. They found that their multiple years of medical experience could not help interpret the relativeness of the score or the factors contributing to a score."
+    },
+    {
+      "id": "p_actionable",
+      "label": "§3.2.4 No Actionable Insights",
+      "text": "Our interviewees also questioned the limited utility of it in their medical diagnostic process of sepsis. Most participants (P1, P2, P3, P4, P6) mentioned that they simply ignored the risk score during their diagnosis process because they were confused about the purpose of the risk score and did not know what to do as an actionable next step given a high or low risk score."
+    },
+    {
+      "id": "p_challenger",
+      "label": "§3.2.5 AI Helper or AI Challenger?",
+      "text": "The current AI-based sepsis prediction module mainly focuses on the prediction of the final decision outcomes, in our case, it is the sepsis risk score that suggests whether a patient has sepsis. Such output at the final decision stage implicitly \"challenges\" human decision-makers' authority and expertise in their roles of making that final decision. Due to the current prediction focusing too much on the final stage of decision making only, this human-AI interaction paradigm is essentially perceived as a human-AI competition, which challenges the human experts' expertise and intimidates their authorities and feelings."
+    },
+    {
+      "id": "p_ds",
+      "label": "§4.1 Design Strategies",
+      "text": "Based on the stage 1 findings, we conclude five design strategies for the new design of the sepsis module. Design Strategy 1: Performing Future Risk Score Prediction. Design Strategy 2: Providing Accessible Model Explanation. Design Strategy 3: Revealing Actionable Insights and Suggestions. Design Strategy 4: Displaying Uncertainty beyond the Risk Score. Design Strategy 5: Shifting AI from Suggesting the Final Decision to Supporting Intermediate Stages."
+    },
+    {
+      "id": "p_future",
+      "label": "§4.2 Future Risk Prediction with Uncertainty Visualization",
+      "text": "As mentioned in Section 4.1, one core part of SepsisLab is a predictive algorithm that generates future prediction of sepsis risk scores. As shown in the bottom part of SepsisLab interface, we design a time-series plot to visualize both the historical (the solid line) and expected future (the dashed line) risk prediction trajectory over time."
+    },
+    {
+      "id": "p_uncertainty",
+      "label": "§4.2 Uncertainty Visualization",
+      "text": "Moreover, for each risk score prediction, the model also generates the uncertainty range of the expected value, as shown in the gray area in the line plot. We selected visualized confidence intervals to display the prediction uncertainty, because prior work has found that confidence intervals evoke high levels of trust. While prior research has found that other uncertainty visualization techniques produce more accurate risk judgments, our visualization aims to show relative risk rather than the precise values."
+    },
+    {
+      "id": "p_labrec",
+      "label": "§4.2 Lab Tests Recommendations",
+      "text": "Combining the two parts of future risk prediction and feature important visualization, we added the lab tests recommendation function into our interface. SepsisLab recommends an item list ranked by their importance. The clinician can select one or multiple lab items and observe how their test results could influence the model's risk prediction trajectory (the red dashed line) and the corresponding uncertainty range (the red area). Note that the red line and area are counterfactual values that are estimated by the algorithm."
+    },
+    {
+      "id": "p_lstm",
+      "label": "§4.3.1 LSTM-based Predictive Model",
+      "text": "Recurrent Neural Network (RNN) model architectures are more suitable for the sepsis predictive tasks on the temporal observational data with irregular time intervals. In this work, we select Long Short-Term Memory (LSTM) as the backbone of the prediction framework, which is able to capture both long-term and short-term clinical information in patients' EHR history. A variable attention module that can handle varying numbers of inputs is followed to generate a fixed-size vector that is sent to LSTM. The attention module can automatically focus on important variables, and the learned attention weights can be used to interpret the prediction results — this enables the users to see each input feature's importance score contributing to the predictive model."
+    },
+    {
+      "id": "p_mcs",
+      "label": "§4.3.2 Lab Test Recommendation Based on Uncertainty Estimation",
+      "text": "Based on previous work that has shown superior performance in missing value imputation with deep learning, we adopt Monte Carlo Simulation (MCS) to sample the missing values many times and compute the uncertainty with the standard deviation of the outputs with MCS. Two thresholds th_s and th_e (1 > th_s, th_e > 0) are set according to the desired sensitivity and precision to decide whether new laboratory values should be requested. We define the uncertainty as Shannon entropy e = -p log(p) - (1-p) log(1-p). If the uncertainty e > th_e, the model will recommend clinicians to collect more clinical variables, for example laboratory values."
+    },
+    {
+      "id": "p_results",
+      "label": "§4.3.2 Results (Table 2)",
+      "text": "To confirm that the recommendation can improve the model performance in the absence of certain laboratory values, we conducted experimental tests on the MIMIC-III dataset. As shown in Table 2, in our implementation, with an LSTM model, our recommendation algorithm performs comparable to full observation setting models and outperforms the masked setting models by approximately 10% with only 9.6% extra laboratory values requested by our recommendation algorithm. The results indicate that our recommendation algorithm can achieve performance nearly equivalent to that under full observation, thus enabling accurate predictions even with fewer lab test results, without compromising prediction precision."
+    },
+    {
+      "id": "p_eval",
+      "label": "§5.2.1 Shifting AI Focus Enhances Collaboration",
+      "text": "Our evaluation study results confirmed that the new system was able to improve the human-AI collaboration experience. Clinicians (P2, P6) commented that the early prediction with uncertainty visualization and lab test recommendations could ease feelings of being in competition with or replaced by AI, since it no longer focuses on the final stage and leaves humans to decide whether to take the suggestions or not. Instead, our system ensures that physicians retain the role of final decision-maker. \"if you tell me, you (model) need these labs, you got it, buddy; I will order those labs. It's not a problem...\" (P2)"
+    },
+    {
+      "id": "p_beyond",
+      "label": "§6.2 Beyond Sepsis Diagnosis",
+      "text": "We envision such a new human-AI collaboration paradigm can move beyond sepsis diagnosis. In healthcare, there are a number of decision-making tasks that have similar properties as sepsis diagnosis: highly uncertain, high-stakes, and time-sensitive. Examples include both physical health problems (e.g., stroke, heart attack, and meningitis), and mental health problems (e.g., major depressive disorder with suicidal ideation, bipolar disorder during a manic episode, and schizophrenia with psychosis). In addition, we foresee that such a new human-AI collaboration paradigm can be applicable to other non-healthcare complex decision-making scenarios as well, such as military (e.g., hostage rescues, evacuation operations), business (e.g., product launch/recalls, market crisis), emergency response (e.g., earthquake response, wildfire response), just name a few."
+    },
+    {
+      "id": "p_risks",
+      "label": "§6.3 Risks and Ethical Concerns",
+      "text": "Despite the promising advantage of our newly proposed human-AI collaboration paradigm, we also want to highlight the risks and ethical concerns associated with it. For example, such a new paradigm would introduce additional burden to experts. In our study, participants were concerned about the cognitive load caused by our system, which has been reported in previous studies related to visualization. Meanwhile, mistakes and errors made by AI are inevitable, and the potential biases embedded in AI algorithms are not yet addressed by this new paradigm. Besides, there is a potential risk of over-dependence on AI systems, which might foster complacency and reduce vigilance among human experts."
+    },
+    {
+      "id": "p_limits",
+      "label": "§6.4 Limitation and Future Work",
+      "text": "There are several limitations in our work. First, our study population is limited. We only involved six physicians in our formative study and heuristic evaluation, who came from the same hospital and only used one specific sepsis module ESM. Second, our system is implemented as a prototype and not integrated into the EHR system. Our evaluation study used our system as a design probe to collect clinicians' feedback. We also find that physicians and nurses often have different responsibilities in the diagnostic decision-making process. Different workflows that arise from different clinical roles are often overlooked in contemporary AI-CDSS designs."
+    }
+  ],
+  "augment": {
+    "s1": {
+      "annotations": [
+        {
+          "id": "n1",
+          "anchor": "benchmark datasets",
+          "domain": "ml",
+          "category": "vocab",
+          "display": "inline",
+          "content": "Curated example sets a model is scored on — easy to ace, unlike messy hospital reality.",
+          "gloss": "tidy test data, not the real world"
+        },
+        {
+          "id": "n2",
+          "anchor": "real-world deployment",
+          "domain": "hci",
+          "category": "argument-role",
+          "display": "inline",
+          "content": "The gap between 'works in the paper' and 'works on the ward' is the whole motivation here.",
+          "gloss": "actually used on real patients"
+        },
+        {
+          "id": "n3",
+          "anchor": "abandon",
+          "domain": "hci",
+          "category": "argument-role",
+          "display": "inline",
+          "content": "Clinicians didn't fight the tool — they just routed around it. That's the symptom being diagnosed.",
+          "gloss": "quietly stop using it"
+        },
+        {
+          "id": "n4",
+          "anchor": "intermediate stages",
+          "domain": "argument-role",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "Forming a hunch and gathering data — the steps before the diagnosis, where help is wanted.",
+          "gloss": "the messy middle, not the final call"
+        },
+        {
+          "id": "n5",
+          "anchor": "prediction uncertainty",
+          "domain": "stats",
+          "category": "vocab",
+          "display": "inline",
+          "content": "Not just 'risk = 30%', but 'give or take how much' — a second number that builds trust.",
+          "gloss": "how unsure the model is"
+        },
+        {
+          "id": "n6",
+          "anchor": "heuristic evaluation",
+          "domain": "hci",
+          "category": "vocab",
+          "display": "inline",
+          "content": "A lightweight usability check: let real clinicians use the prototype and gather feedback, vs. a formal trial.",
+          "gloss": "experts try it and react"
+        }
+      ]
+    },
+    "s2": {
+      "annotations": [
+        {
+          "id": "n7",
+          "anchor": "benchmark datasets",
+          "domain": "ml",
+          "category": "vocab",
+          "display": "inline",
+          "content": "Curated example sets a model is scored on — easy to ace, unlike messy hospital reality.",
+          "gloss": "tidy test data, not the real world"
+        },
+        {
+          "id": "n8",
+          "anchor": "real-world deployment",
+          "domain": "hci",
+          "category": "argument-role",
+          "display": "inline",
+          "content": "The gap between 'works in the paper' and 'works on the ward' is the whole motivation here.",
+          "gloss": "actually used on real patients"
+        },
+        {
+          "id": "n9",
+          "anchor": "abandon",
+          "domain": "hci",
+          "category": "argument-role",
+          "display": "inline",
+          "content": "Clinicians didn't fight the tool — they just routed around it. That's the symptom being diagnosed.",
+          "gloss": "quietly stop using it"
+        },
+        {
+          "id": "n10",
+          "anchor": "intermediate stages",
+          "domain": "argument-role",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "Forming a hunch and gathering data — the steps before the diagnosis, where help is wanted.",
+          "gloss": "the messy middle, not the final call"
+        },
+        {
+          "id": "n11",
+          "anchor": "prediction uncertainty",
+          "domain": "stats",
+          "category": "vocab",
+          "display": "inline",
+          "content": "Not just 'risk = 30%', but 'give or take how much' — a second number that builds trust.",
+          "gloss": "how unsure the model is"
+        },
+        {
+          "id": "n12",
+          "anchor": "heuristic evaluation",
+          "domain": "hci",
+          "category": "vocab",
+          "display": "inline",
+          "content": "A lightweight usability check: let real clinicians use the prototype and gather feedback, vs. a formal trial.",
+          "gloss": "experts try it and react"
+        }
+      ]
+    },
+    "s3": {
+      "annotations": [
+        {
+          "id": "n13",
+          "anchor": "benchmark datasets",
+          "domain": "ml",
+          "category": "vocab",
+          "display": "inline",
+          "content": "Curated example sets a model is scored on — easy to ace, unlike messy hospital reality.",
+          "gloss": "tidy test data, not the real world"
+        },
+        {
+          "id": "n14",
+          "anchor": "real-world deployment",
+          "domain": "hci",
+          "category": "argument-role",
+          "display": "inline",
+          "content": "The gap between 'works in the paper' and 'works on the ward' is the whole motivation here.",
+          "gloss": "actually used on real patients"
+        },
+        {
+          "id": "n15",
+          "anchor": "abandon",
+          "domain": "hci",
+          "category": "argument-role",
+          "display": "inline",
+          "content": "Clinicians didn't fight the tool — they just routed around it. That's the symptom being diagnosed.",
+          "gloss": "quietly stop using it"
+        },
+        {
+          "id": "n16",
+          "anchor": "intermediate stages",
+          "domain": "argument-role",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "Forming a hunch and gathering data — the steps before the diagnosis, where help is wanted.",
+          "gloss": "the messy middle, not the final call"
+        },
+        {
+          "id": "n17",
+          "anchor": "prediction uncertainty",
+          "domain": "stats",
+          "category": "vocab",
+          "display": "inline",
+          "content": "Not just 'risk = 30%', but 'give or take how much' — a second number that builds trust.",
+          "gloss": "how unsure the model is"
+        },
+        {
+          "id": "n18",
+          "anchor": "heuristic evaluation",
+          "domain": "hci",
+          "category": "vocab",
+          "display": "inline",
+          "content": "A lightweight usability check: let real clinicians use the prototype and gather feedback, vs. a formal trial.",
+          "gloss": "experts try it and react"
+        }
+      ]
+    },
+    "s4": {
+      "annotations": [
+        {
+          "id": "n19",
+          "anchor": "Sepsis",
+          "domain": "clinical",
+          "category": "vocab",
+          "display": "inline",
+          "content": "Not the infection itself — the immune response spiralling out of control and harming the body's own organs.",
+          "gloss": "the body's defence gone haywire"
+        },
+        {
+          "id": "n20",
+          "anchor": "48.9 million patients per year",
+          "domain": "stats",
+          "category": "numbers",
+          "display": "inline",
+          "content": "One of the world's leading causes of death — which is why early detection is such a big deal.",
+          "gloss": "≈ 1 in 160 people, yearly",
+          "viz": {
+            "type": "fraction",
+            "filled": 11,
+            "total": 49,
+            "label": "≈ 11M deaths of 48.9M cases"
+          }
+        },
+        {
+          "id": "n21",
+          "anchor": "organ dysfunction",
+          "domain": "clinical",
+          "category": "vocab",
+          "display": "inline",
+          "content": "organs starting to fail",
+          "gloss": "organs starting to fail"
+        },
+        {
+          "id": "n22",
+          "anchor": "dysregulated response to infection",
+          "domain": "clinical",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "The damage comes from the over-the-top defence, not just the germs.",
+          "gloss": "immune system overreacting"
+        },
+        {
+          "id": "n23",
+          "anchor": "die within a few hours",
+          "domain": "clinical",
+          "category": "argument-role",
+          "display": "inline",
+          "content": "This speed is what makes a late warning useless — the core problem of the old tool.",
+          "gloss": "the clock is brutal"
+        }
+      ]
+    },
+    "s5": {
+      "annotations": [
+        {
+          "id": "n24",
+          "anchor": "Epic Sepsis Module (ESM)",
+          "domain": "clinical",
+          "category": "argument-role",
+          "display": "inline",
+          "content": "Built into the Epic records system; the most common sepsis alert in US hospitals. Its failures drive the paper.",
+          "gloss": "the widely-used incumbent tool"
+        },
+        {
+          "id": "n25",
+          "anchor": "Electrical Health Record (EHR)",
+          "domain": "clinical",
+          "category": "vocab",
+          "display": "inline",
+          "content": "Every vital sign, lab and note in one system. (The paper writes 'Electrical'; the field's term is 'Electronic'.)",
+          "gloss": "the digital patient chart"
+        },
+        {
+          "id": "n26",
+          "anchor": "machine learning algorithm",
+          "domain": "ml",
+          "category": "vocab",
+          "display": "inline",
+          "content": "Software that learned which records tend to precede sepsis, rather than following hand-written criteria.",
+          "gloss": "learns patterns, not rules"
+        },
+        {
+          "id": "n27",
+          "anchor": "biomarker data",
+          "domain": "clinical",
+          "category": "vocab",
+          "display": "inline",
+          "content": "Lab values like lactate or white-cell count that hint at what's happening inside.",
+          "gloss": "measurable body signals"
+        },
+        {
+          "id": "n28",
+          "anchor": "sepsis risk score",
+          "domain": "stats",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "The model boils everything down to a single score — convenient, but it hides the reasoning.",
+          "gloss": "one number for the whole patient",
+          "example": "E.g. score = 13 on a 0–100 scale → an alert fires, but you still dont know why."
+        },
+        {
+          "id": "n29",
+          "anchor": "higher than a threshold",
+          "domain": "stats",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "Where you set that line trades off catching every case against crying wolf — the tension in the next section.",
+          "gloss": "cross the line → alarm",
+          "example": "E.g. threshold = 13 → a patient at 14 trips the alarm, one at 12 doesnt."
+        },
+        {
+          "id": "n30",
+          "anchor": "agree, disagree, or dismiss",
+          "domain": "hci",
+          "category": "argument-role",
+          "display": "inline",
+          "content": "The AI decides; the clinician just rubber-stamps or rejects. That framing is what feels like a competitor.",
+          "gloss": "the human's only role: react"
+        },
+        {
+          "id": "n31",
+          "anchor": "too late and thus useless",
+          "domain": "argument-role",
+          "category": "argument-role",
+          "display": "inline",
+          "content": "If the alert fires after you've already acted, it adds nothing.",
+          "gloss": "the #1 complaint"
+        },
+        {
+          "id": "n32",
+          "anchor": "time-sensitive decision",
+          "domain": "clinical",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "The window is hours, so you can't wait for the data the AI needs.",
+          "gloss": "must decide fast, now"
+        },
+        {
+          "id": "n33",
+          "anchor": "first encounter",
+          "domain": "clinical",
+          "category": "background",
+          "display": "inline",
+          "content": "Exactly when the chart is emptiest — and when the model has least to work with.",
+          "gloss": "the moment of arrival"
+        },
+        {
+          "id": "n34",
+          "anchor": "huge uncertainty",
+          "domain": "stats",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "deciding with little evidence",
+          "gloss": "deciding with little evidence"
+        },
+        {
+          "id": "n35",
+          "anchor": "not digitalized yet",
+          "domain": "clinical",
+          "category": "background",
+          "display": "inline",
+          "content": "Early on, vitals and labs may be on paper or not taken — so the AI is flying blind.",
+          "gloss": "data exists but isn't typed in"
+        }
+      ]
+    },
+    "s6": {
+      "annotations": [
+        {
+          "id": "n36",
+          "anchor": "final decision outcomes",
+          "domain": "argument-role",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "It predicts the answer itself, instead of helping the human reach one.",
+          "gloss": "the AI grabs the verdict"
+        },
+        {
+          "id": "n37",
+          "anchor": "challenges",
+          "domain": "hci",
+          "category": "argument-role",
+          "display": "inline",
+          "content": "steps on the doctor's turf",
+          "gloss": "steps on the doctor's turf"
+        },
+        {
+          "id": "n38",
+          "anchor": "human-AI competition",
+          "domain": "hci",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "The core diagnosis: aiming the AI at the verdict turns it into a competitor that intimidates experts.",
+          "gloss": "rival, not teammate"
+        },
+        {
+          "id": "n39",
+          "anchor": "intimidates their authorities",
+          "domain": "hci",
+          "category": "argument-role",
+          "display": "inline",
+          "content": "undermines their expertise",
+          "gloss": "undermines their expertise"
+        }
+      ]
+    },
+    "s7": {
+      "annotations": [
+        {
+          "id": "n40",
+          "anchor": "final decision outcomes",
+          "domain": "argument-role",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "It predicts the answer itself, instead of helping the human reach one.",
+          "gloss": "the AI grabs the verdict"
+        },
+        {
+          "id": "n41",
+          "anchor": "challenges",
+          "domain": "hci",
+          "category": "argument-role",
+          "display": "inline",
+          "content": "steps on the doctor's turf",
+          "gloss": "steps on the doctor's turf"
+        },
+        {
+          "id": "n42",
+          "anchor": "human-AI competition",
+          "domain": "hci",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "The core diagnosis: aiming the AI at the verdict turns it into a competitor that intimidates experts.",
+          "gloss": "rival, not teammate"
+        },
+        {
+          "id": "n43",
+          "anchor": "intimidates their authorities",
+          "domain": "hci",
+          "category": "argument-role",
+          "display": "inline",
+          "content": "undermines their expertise",
+          "gloss": "undermines their expertise"
+        }
+      ]
+    },
+    "s8": {
+      "annotations": [
+        {
+          "id": "n44",
+          "anchor": "benchmark datasets",
+          "domain": "ml",
+          "category": "vocab",
+          "display": "inline",
+          "content": "Curated example sets a model is scored on — easy to ace, unlike messy hospital reality.",
+          "gloss": "tidy test data, not the real world"
+        },
+        {
+          "id": "n45",
+          "anchor": "real-world deployment",
+          "domain": "hci",
+          "category": "argument-role",
+          "display": "inline",
+          "content": "The gap between 'works in the paper' and 'works on the ward' is the whole motivation here.",
+          "gloss": "actually used on real patients"
+        },
+        {
+          "id": "n46",
+          "anchor": "abandon",
+          "domain": "hci",
+          "category": "argument-role",
+          "display": "inline",
+          "content": "Clinicians didn't fight the tool — they just routed around it. That's the symptom being diagnosed.",
+          "gloss": "quietly stop using it"
+        },
+        {
+          "id": "n47",
+          "anchor": "intermediate stages",
+          "domain": "argument-role",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "Forming a hunch and gathering data — the steps before the diagnosis, where help is wanted.",
+          "gloss": "the messy middle, not the final call"
+        },
+        {
+          "id": "n48",
+          "anchor": "prediction uncertainty",
+          "domain": "stats",
+          "category": "vocab",
+          "display": "inline",
+          "content": "Not just 'risk = 30%', but 'give or take how much' — a second number that builds trust.",
+          "gloss": "how unsure the model is"
+        },
+        {
+          "id": "n49",
+          "anchor": "heuristic evaluation",
+          "domain": "hci",
+          "category": "vocab",
+          "display": "inline",
+          "content": "A lightweight usability check: let real clinicians use the prototype and gather feedback, vs. a formal trial.",
+          "gloss": "experts try it and react"
+        }
+      ]
+    },
+    "s9": {
+      "annotations": [
+        {
+          "id": "n50",
+          "anchor": "Sepsis",
+          "domain": "clinical",
+          "category": "vocab",
+          "display": "inline",
+          "content": "Not the infection itself — the immune response spiralling out of control and harming the body's own organs.",
+          "gloss": "the body's defence gone haywire"
+        },
+        {
+          "id": "n51",
+          "anchor": "48.9 million patients per year",
+          "domain": "stats",
+          "category": "numbers",
+          "display": "inline",
+          "content": "One of the world's leading causes of death — which is why early detection is such a big deal.",
+          "gloss": "≈ 1 in 160 people, yearly",
+          "viz": {
+            "type": "fraction",
+            "filled": 11,
+            "total": 49,
+            "label": "≈ 11M deaths of 48.9M cases"
+          }
+        },
+        {
+          "id": "n52",
+          "anchor": "organ dysfunction",
+          "domain": "clinical",
+          "category": "vocab",
+          "display": "inline",
+          "content": "organs starting to fail",
+          "gloss": "organs starting to fail"
+        },
+        {
+          "id": "n53",
+          "anchor": "dysregulated response to infection",
+          "domain": "clinical",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "The damage comes from the over-the-top defence, not just the germs.",
+          "gloss": "immune system overreacting"
+        },
+        {
+          "id": "n54",
+          "anchor": "die within a few hours",
+          "domain": "clinical",
+          "category": "argument-role",
+          "display": "inline",
+          "content": "This speed is what makes a late warning useless — the core problem of the old tool.",
+          "gloss": "the clock is brutal"
+        }
+      ]
+    },
+    "s10": {
+      "annotations": [
+        {
+          "id": "n55",
+          "anchor": "Sepsis",
+          "domain": "clinical",
+          "category": "vocab",
+          "display": "inline",
+          "content": "Not the infection itself — the immune response spiralling out of control and harming the body's own organs.",
+          "gloss": "the body's defence gone haywire"
+        },
+        {
+          "id": "n56",
+          "anchor": "48.9 million patients per year",
+          "domain": "stats",
+          "category": "numbers",
+          "display": "inline",
+          "content": "One of the world's leading causes of death — which is why early detection is such a big deal.",
+          "gloss": "≈ 1 in 160 people, yearly",
+          "viz": {
+            "type": "fraction",
+            "filled": 11,
+            "total": 49,
+            "label": "≈ 11M deaths of 48.9M cases"
+          }
+        },
+        {
+          "id": "n57",
+          "anchor": "organ dysfunction",
+          "domain": "clinical",
+          "category": "vocab",
+          "display": "inline",
+          "content": "organs starting to fail",
+          "gloss": "organs starting to fail"
+        },
+        {
+          "id": "n58",
+          "anchor": "dysregulated response to infection",
+          "domain": "clinical",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "The damage comes from the over-the-top defence, not just the germs.",
+          "gloss": "immune system overreacting"
+        },
+        {
+          "id": "n59",
+          "anchor": "die within a few hours",
+          "domain": "clinical",
+          "category": "argument-role",
+          "display": "inline",
+          "content": "This speed is what makes a late warning useless — the core problem of the old tool.",
+          "gloss": "the clock is brutal"
+        }
+      ]
+    },
+    "s11": {
+      "annotations": [
+        {
+          "id": "n60",
+          "anchor": "abnormal cell detection in medical imaging",
+          "domain": "clinical",
+          "category": "background",
+          "display": "inline",
+          "content": "In a scan, all the evidence is in the picture. Sepsis isn't like that — hence it's harder.",
+          "gloss": "the 'easy' AI comparison"
+        },
+        {
+          "id": "n61",
+          "anchor": "develop sepsis in the near future",
+          "domain": "clinical",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "Two questions at once: do they have it now, and will they get it soon? Forecasting, not just labelling.",
+          "gloss": "not just now — what's coming"
+        },
+        {
+          "id": "n62",
+          "anchor": "blood culture",
+          "domain": "clinical",
+          "category": "vocab",
+          "display": "inline",
+          "content": "Grow the patient's blood and watch for bacteria — reliable, but it needs hours.",
+          "gloss": "the slow, definitive test"
+        },
+        {
+          "id": "n63",
+          "anchor": "Sepsis-3 guidelines",
+          "domain": "clinical",
+          "category": "vocab",
+          "display": "inline",
+          "content": "The current consensus definition clinicians are trained to follow.",
+          "gloss": "the official rulebook for sepsis"
+        },
+        {
+          "id": "n64",
+          "anchor": "8 hours",
+          "domain": "stats",
+          "category": "numbers",
+          "display": "inline",
+          "content": "By the time the gold-standard answer arrives, an untreated patient may already be in organ failure.",
+          "gloss": "too slow to wait for"
+        },
+        {
+          "id": "n65",
+          "anchor": "too late and thus useless",
+          "domain": "argument-role",
+          "category": "argument-role",
+          "display": "inline",
+          "content": "If the alert fires after you've already acted, it adds nothing.",
+          "gloss": "the #1 complaint"
+        },
+        {
+          "id": "n66",
+          "anchor": "time-sensitive decision",
+          "domain": "clinical",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "The window is hours, so you can't wait for the data the AI needs.",
+          "gloss": "must decide fast, now"
+        },
+        {
+          "id": "n67",
+          "anchor": "first encounter",
+          "domain": "clinical",
+          "category": "background",
+          "display": "inline",
+          "content": "Exactly when the chart is emptiest — and when the model has least to work with.",
+          "gloss": "the moment of arrival"
+        },
+        {
+          "id": "n68",
+          "anchor": "huge uncertainty",
+          "domain": "stats",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "deciding with little evidence",
+          "gloss": "deciding with little evidence"
+        },
+        {
+          "id": "n69",
+          "anchor": "not digitalized yet",
+          "domain": "clinical",
+          "category": "background",
+          "display": "inline",
+          "content": "Early on, vitals and labs may be on paper or not taken — so the AI is flying blind.",
+          "gloss": "data exists but isn't typed in"
+        }
+      ]
+    },
+    "s12": {
+      "annotations": [
+        {
+          "id": "n70",
+          "anchor": "abnormal cell detection in medical imaging",
+          "domain": "clinical",
+          "category": "background",
+          "display": "inline",
+          "content": "In a scan, all the evidence is in the picture. Sepsis isn't like that — hence it's harder.",
+          "gloss": "the 'easy' AI comparison"
+        },
+        {
+          "id": "n71",
+          "anchor": "develop sepsis in the near future",
+          "domain": "clinical",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "Two questions at once: do they have it now, and will they get it soon? Forecasting, not just labelling.",
+          "gloss": "not just now — what's coming"
+        },
+        {
+          "id": "n72",
+          "anchor": "blood culture",
+          "domain": "clinical",
+          "category": "vocab",
+          "display": "inline",
+          "content": "Grow the patient's blood and watch for bacteria — reliable, but it needs hours.",
+          "gloss": "the slow, definitive test"
+        },
+        {
+          "id": "n73",
+          "anchor": "Sepsis-3 guidelines",
+          "domain": "clinical",
+          "category": "vocab",
+          "display": "inline",
+          "content": "The current consensus definition clinicians are trained to follow.",
+          "gloss": "the official rulebook for sepsis"
+        },
+        {
+          "id": "n74",
+          "anchor": "8 hours",
+          "domain": "stats",
+          "category": "numbers",
+          "display": "inline",
+          "content": "By the time the gold-standard answer arrives, an untreated patient may already be in organ failure.",
+          "gloss": "too slow to wait for"
+        }
+      ]
+    },
+    "s13": {
+      "annotations": [
+        {
+          "id": "n75",
+          "anchor": "abnormal cell detection in medical imaging",
+          "domain": "clinical",
+          "category": "background",
+          "display": "inline",
+          "content": "In a scan, all the evidence is in the picture. Sepsis isn't like that — hence it's harder.",
+          "gloss": "the 'easy' AI comparison"
+        },
+        {
+          "id": "n76",
+          "anchor": "develop sepsis in the near future",
+          "domain": "clinical",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "Two questions at once: do they have it now, and will they get it soon? Forecasting, not just labelling.",
+          "gloss": "not just now — what's coming"
+        },
+        {
+          "id": "n77",
+          "anchor": "blood culture",
+          "domain": "clinical",
+          "category": "vocab",
+          "display": "inline",
+          "content": "Grow the patient's blood and watch for bacteria — reliable, but it needs hours.",
+          "gloss": "the slow, definitive test"
+        },
+        {
+          "id": "n78",
+          "anchor": "Sepsis-3 guidelines",
+          "domain": "clinical",
+          "category": "vocab",
+          "display": "inline",
+          "content": "The current consensus definition clinicians are trained to follow.",
+          "gloss": "the official rulebook for sepsis"
+        },
+        {
+          "id": "n79",
+          "anchor": "8 hours",
+          "domain": "stats",
+          "category": "numbers",
+          "display": "inline",
+          "content": "By the time the gold-standard answer arrives, an untreated patient may already be in organ failure.",
+          "gloss": "too slow to wait for"
+        }
+      ]
+    },
+    "s14": {
+      "annotations": [
+        {
+          "id": "n80",
+          "anchor": "four stages of the medical decision-making workflow",
+          "domain": "clinical",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "Hunch → gather data → test hunch → decide. The paper's key map.",
+          "gloss": "how a diagnosis really unfolds"
+        },
+        {
+          "id": "n81",
+          "anchor": "Generating hypotheses",
+          "domain": "clinical",
+          "category": "vocab",
+          "display": "inline",
+          "content": "forming an initial hunch",
+          "gloss": "forming an initial hunch"
+        },
+        {
+          "id": "n82",
+          "anchor": "Testing hypotheses",
+          "domain": "clinical",
+          "category": "vocab",
+          "display": "inline",
+          "content": "checking the hunch against new labs",
+          "gloss": "checking the hunch against new labs"
+        },
+        {
+          "id": "n83",
+          "anchor": "final diagnosis stage",
+          "domain": "argument-role",
+          "category": "argument-role",
+          "display": "inline",
+          "content": "The incumbent only helped at step 4; the redesign moves help to steps 1–3.",
+          "gloss": "where the old AI aimed — the wrong spot"
+        }
+      ]
+    },
+    "s15": {
+      "annotations": [
+        {
+          "id": "n84",
+          "anchor": "Epic Sepsis Module (ESM)",
+          "domain": "clinical",
+          "category": "argument-role",
+          "display": "inline",
+          "content": "Built into the Epic records system; the most common sepsis alert in US hospitals. Its failures drive the paper.",
+          "gloss": "the widely-used incumbent tool"
+        },
+        {
+          "id": "n85",
+          "anchor": "Electrical Health Record (EHR)",
+          "domain": "clinical",
+          "category": "vocab",
+          "display": "inline",
+          "content": "Every vital sign, lab and note in one system. (The paper writes 'Electrical'; the field's term is 'Electronic'.)",
+          "gloss": "the digital patient chart"
+        },
+        {
+          "id": "n86",
+          "anchor": "machine learning algorithm",
+          "domain": "ml",
+          "category": "vocab",
+          "display": "inline",
+          "content": "Software that learned which records tend to precede sepsis, rather than following hand-written criteria.",
+          "gloss": "learns patterns, not rules"
+        },
+        {
+          "id": "n87",
+          "anchor": "biomarker data",
+          "domain": "clinical",
+          "category": "vocab",
+          "display": "inline",
+          "content": "Lab values like lactate or white-cell count that hint at what's happening inside.",
+          "gloss": "measurable body signals"
+        },
+        {
+          "id": "n88",
+          "anchor": "sepsis risk score",
+          "domain": "stats",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "The model boils everything down to a single score — convenient, but it hides the reasoning.",
+          "gloss": "one number for the whole patient",
+          "example": "E.g. score = 13 on a 0–100 scale → an alert fires, but you still dont know why."
+        },
+        {
+          "id": "n89",
+          "anchor": "higher than a threshold",
+          "domain": "stats",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "Where you set that line trades off catching every case against crying wolf — the tension in the next section.",
+          "gloss": "cross the line → alarm",
+          "example": "E.g. threshold = 13 → a patient at 14 trips the alarm, one at 12 doesnt."
+        },
+        {
+          "id": "n90",
+          "anchor": "agree, disagree, or dismiss",
+          "domain": "hci",
+          "category": "argument-role",
+          "display": "inline",
+          "content": "The AI decides; the clinician just rubber-stamps or rejects. That framing is what feels like a competitor.",
+          "gloss": "the human's only role: react"
+        }
+      ]
+    },
+    "s16": {
+      "annotations": [
+        {
+          "id": "n91",
+          "anchor": "Epic Sepsis Module (ESM)",
+          "domain": "clinical",
+          "category": "argument-role",
+          "display": "inline",
+          "content": "Built into the Epic records system; the most common sepsis alert in US hospitals. Its failures drive the paper.",
+          "gloss": "the widely-used incumbent tool"
+        },
+        {
+          "id": "n92",
+          "anchor": "Electrical Health Record (EHR)",
+          "domain": "clinical",
+          "category": "vocab",
+          "display": "inline",
+          "content": "Every vital sign, lab and note in one system. (The paper writes 'Electrical'; the field's term is 'Electronic'.)",
+          "gloss": "the digital patient chart"
+        },
+        {
+          "id": "n93",
+          "anchor": "machine learning algorithm",
+          "domain": "ml",
+          "category": "vocab",
+          "display": "inline",
+          "content": "Software that learned which records tend to precede sepsis, rather than following hand-written criteria.",
+          "gloss": "learns patterns, not rules"
+        },
+        {
+          "id": "n94",
+          "anchor": "biomarker data",
+          "domain": "clinical",
+          "category": "vocab",
+          "display": "inline",
+          "content": "Lab values like lactate or white-cell count that hint at what's happening inside.",
+          "gloss": "measurable body signals"
+        },
+        {
+          "id": "n95",
+          "anchor": "sepsis risk score",
+          "domain": "stats",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "The model boils everything down to a single score — convenient, but it hides the reasoning.",
+          "gloss": "one number for the whole patient",
+          "example": "E.g. score = 13 on a 0–100 scale → an alert fires, but you still dont know why."
+        },
+        {
+          "id": "n96",
+          "anchor": "higher than a threshold",
+          "domain": "stats",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "Where you set that line trades off catching every case against crying wolf — the tension in the next section.",
+          "gloss": "cross the line → alarm",
+          "example": "E.g. threshold = 13 → a patient at 14 trips the alarm, one at 12 doesnt."
+        },
+        {
+          "id": "n97",
+          "anchor": "agree, disagree, or dismiss",
+          "domain": "hci",
+          "category": "argument-role",
+          "display": "inline",
+          "content": "The AI decides; the clinician just rubber-stamps or rejects. That framing is what feels like a competitor.",
+          "gloss": "the human's only role: react"
+        }
+      ]
+    },
+    "s17": {
+      "annotations": [
+        {
+          "id": "n98",
+          "anchor": "too late and thus useless",
+          "domain": "argument-role",
+          "category": "argument-role",
+          "display": "inline",
+          "content": "If the alert fires after you've already acted, it adds nothing.",
+          "gloss": "the #1 complaint"
+        },
+        {
+          "id": "n99",
+          "anchor": "time-sensitive decision",
+          "domain": "clinical",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "The window is hours, so you can't wait for the data the AI needs.",
+          "gloss": "must decide fast, now"
+        },
+        {
+          "id": "n100",
+          "anchor": "first encounter",
+          "domain": "clinical",
+          "category": "background",
+          "display": "inline",
+          "content": "Exactly when the chart is emptiest — and when the model has least to work with.",
+          "gloss": "the moment of arrival"
+        },
+        {
+          "id": "n101",
+          "anchor": "huge uncertainty",
+          "domain": "stats",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "deciding with little evidence",
+          "gloss": "deciding with little evidence"
+        },
+        {
+          "id": "n102",
+          "anchor": "not digitalized yet",
+          "domain": "clinical",
+          "category": "background",
+          "display": "inline",
+          "content": "Early on, vitals and labs may be on paper or not taken — so the AI is flying blind.",
+          "gloss": "data exists but isn't typed in"
+        }
+      ]
+    },
+    "s18": {
+      "annotations": [
+        {
+          "id": "n103",
+          "anchor": "too late and thus useless",
+          "domain": "argument-role",
+          "category": "argument-role",
+          "display": "inline",
+          "content": "If the alert fires after you've already acted, it adds nothing.",
+          "gloss": "the #1 complaint"
+        },
+        {
+          "id": "n104",
+          "anchor": "time-sensitive decision",
+          "domain": "clinical",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "The window is hours, so you can't wait for the data the AI needs.",
+          "gloss": "must decide fast, now"
+        },
+        {
+          "id": "n105",
+          "anchor": "first encounter",
+          "domain": "clinical",
+          "category": "background",
+          "display": "inline",
+          "content": "Exactly when the chart is emptiest — and when the model has least to work with.",
+          "gloss": "the moment of arrival"
+        },
+        {
+          "id": "n106",
+          "anchor": "huge uncertainty",
+          "domain": "stats",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "deciding with little evidence",
+          "gloss": "deciding with little evidence"
+        },
+        {
+          "id": "n107",
+          "anchor": "not digitalized yet",
+          "domain": "clinical",
+          "category": "background",
+          "display": "inline",
+          "content": "Early on, vitals and labs may be on paper or not taken — so the AI is flying blind.",
+          "gloss": "data exists but isn't typed in"
+        }
+      ]
+    },
+    "s19": {
+      "annotations": [
+        {
+          "id": "n108",
+          "anchor": "too late and thus useless",
+          "domain": "argument-role",
+          "category": "argument-role",
+          "display": "inline",
+          "content": "If the alert fires after you've already acted, it adds nothing.",
+          "gloss": "the #1 complaint"
+        },
+        {
+          "id": "n109",
+          "anchor": "time-sensitive decision",
+          "domain": "clinical",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "The window is hours, so you can't wait for the data the AI needs.",
+          "gloss": "must decide fast, now"
+        },
+        {
+          "id": "n110",
+          "anchor": "first encounter",
+          "domain": "clinical",
+          "category": "background",
+          "display": "inline",
+          "content": "Exactly when the chart is emptiest — and when the model has least to work with.",
+          "gloss": "the moment of arrival"
+        },
+        {
+          "id": "n111",
+          "anchor": "huge uncertainty",
+          "domain": "stats",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "deciding with little evidence",
+          "gloss": "deciding with little evidence"
+        },
+        {
+          "id": "n112",
+          "anchor": "not digitalized yet",
+          "domain": "clinical",
+          "category": "background",
+          "display": "inline",
+          "content": "Early on, vitals and labs may be on paper or not taken — so the AI is flying blind.",
+          "gloss": "data exists but isn't typed in"
+        }
+      ]
+    },
+    "s20": {
+      "annotations": [
+        {
+          "id": "n113",
+          "anchor": "low sensitivity threshold at 13%",
+          "domain": "stats",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "Lower the bar to catch every real sepsis — but that floods you with false alarms (next note).",
+          "gloss": "set to never miss a case"
+        },
+        {
+          "id": "n114",
+          "anchor": "high false positive rate at 87%",
+          "domain": "stats",
+          "category": "numbers",
+          "display": "inline",
+          "content": "Of 100 alerts it raises, ~87 are false → staff learn to ignore it (alert fatigue).",
+          "gloss": "≈ 9 of 10 alarms are false",
+          "viz": {
+            "type": "dots",
+            "filled": 9,
+            "total": 10,
+            "label": "≈ 9 of 10 alarms are false"
+          }
+        },
+        {
+          "id": "n115",
+          "anchor": "alert fatigue",
+          "domain": "clinical",
+          "category": "vocab",
+          "display": "inline",
+          "content": "A real patient-safety hazard: cry wolf often enough and people stop reacting at all.",
+          "gloss": "so many warnings you tune out"
+        },
+        {
+          "id": "n116",
+          "anchor": "20 interruptions per hour",
+          "domain": "stats",
+          "category": "numbers",
+          "display": "inline",
+          "content": "On top of actually treating patients — no wonder the alerts get ignored.",
+          "gloss": "one every ~3 minutes"
+        }
+      ]
+    },
+    "s21": {
+      "annotations": [
+        {
+          "id": "n117",
+          "anchor": "hard to interpret",
+          "domain": "ml",
+          "category": "vocab",
+          "display": "inline",
+          "content": "It gives an answer but no 'why' — so an expert can't tell when to trust or override it.",
+          "gloss": "the 'black box' problem"
+        },
+        {
+          "id": "n118",
+          "anchor": "lower risk score than the score of a less obvious case",
+          "domain": "stats",
+          "category": "argument-role",
+          "display": "inline",
+          "content": "When an obvious case scores lower than a subtle one, the number loses all credibility.",
+          "gloss": "the scores don't make sense"
+        },
+        {
+          "id": "n119",
+          "anchor": "relativeness of the score",
+          "domain": "stats",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "Without a reference point, a bare score is impossible to act on.",
+          "gloss": "is 40 a lot? compared to what?"
+        }
+      ]
+    },
+    "s22": {
+      "annotations": [
+        {
+          "id": "n120",
+          "anchor": "limited utility",
+          "domain": "argument-role",
+          "category": "argument-role",
+          "display": "inline",
+          "content": "Even when the score is right, it doesn't tell you what to do.",
+          "gloss": "doesn't actually help"
+        },
+        {
+          "id": "n121",
+          "anchor": "simply ignored the risk score",
+          "domain": "hci",
+          "category": "argument-role",
+          "display": "inline",
+          "content": "so they tuned it out",
+          "gloss": "so they tuned it out"
+        },
+        {
+          "id": "n122",
+          "anchor": "actionable next step",
+          "domain": "hci",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "What clinicians wanted instead of a number: a suggestion they can act on — like which lab to order.",
+          "gloss": "a concrete 'do this next'"
+        }
+      ]
+    },
+    "s23": {
+      "annotations": [
+        {
+          "id": "n123",
+          "anchor": "final decision outcomes",
+          "domain": "argument-role",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "It predicts the answer itself, instead of helping the human reach one.",
+          "gloss": "the AI grabs the verdict"
+        },
+        {
+          "id": "n124",
+          "anchor": "challenges",
+          "domain": "hci",
+          "category": "argument-role",
+          "display": "inline",
+          "content": "steps on the doctor's turf",
+          "gloss": "steps on the doctor's turf"
+        },
+        {
+          "id": "n125",
+          "anchor": "human-AI competition",
+          "domain": "hci",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "The core diagnosis: aiming the AI at the verdict turns it into a competitor that intimidates experts.",
+          "gloss": "rival, not teammate"
+        },
+        {
+          "id": "n126",
+          "anchor": "intimidates their authorities",
+          "domain": "hci",
+          "category": "argument-role",
+          "display": "inline",
+          "content": "undermines their expertise",
+          "gloss": "undermines their expertise"
+        }
+      ]
+    },
+    "s24": {
+      "annotations": [
+        {
+          "id": "n127",
+          "anchor": "final decision outcomes",
+          "domain": "argument-role",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "It predicts the answer itself, instead of helping the human reach one.",
+          "gloss": "the AI grabs the verdict"
+        },
+        {
+          "id": "n128",
+          "anchor": "challenges",
+          "domain": "hci",
+          "category": "argument-role",
+          "display": "inline",
+          "content": "steps on the doctor's turf",
+          "gloss": "steps on the doctor's turf"
+        },
+        {
+          "id": "n129",
+          "anchor": "human-AI competition",
+          "domain": "hci",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "The core diagnosis: aiming the AI at the verdict turns it into a competitor that intimidates experts.",
+          "gloss": "rival, not teammate"
+        },
+        {
+          "id": "n130",
+          "anchor": "intimidates their authorities",
+          "domain": "hci",
+          "category": "argument-role",
+          "display": "inline",
+          "content": "undermines their expertise",
+          "gloss": "undermines their expertise"
+        }
+      ]
+    },
+    "s25": {
+      "annotations": [
+        {
+          "id": "n131",
+          "anchor": "five design strategies",
+          "domain": "argument-role",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "Each rule answers one of the five complaints from the formative study.",
+          "gloss": "the redesign in 5 rules"
+        },
+        {
+          "id": "n132",
+          "anchor": "Future Risk Score Prediction",
+          "domain": "ml",
+          "category": "vocab",
+          "display": "inline",
+          "content": "forecast, don't just label now",
+          "gloss": "forecast, don't just label now"
+        },
+        {
+          "id": "n133",
+          "anchor": "Accessible Model Explanation",
+          "domain": "ml",
+          "category": "vocab",
+          "display": "inline",
+          "content": "explain itself, plainly",
+          "gloss": "explain itself, plainly"
+        },
+        {
+          "id": "n134",
+          "anchor": "Actionable Insights and Suggestions",
+          "domain": "hci",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "tell them what to do next",
+          "gloss": "tell them what to do next"
+        },
+        {
+          "id": "n135",
+          "anchor": "Displaying Uncertainty beyond the Risk Score",
+          "domain": "stats",
+          "category": "vocab",
+          "display": "inline",
+          "content": "show the doubt, not just the number",
+          "gloss": "show the doubt, not just the number"
+        },
+        {
+          "id": "n136",
+          "anchor": "Supporting Intermediate Stages",
+          "domain": "argument-role",
+          "category": "argument-role",
+          "display": "inline",
+          "content": "The big one: this single shift is what the whole paper argues for.",
+          "gloss": "help the middle, not the verdict"
+        }
+      ]
+    },
+    "s26": {
+      "annotations": [
+        {
+          "id": "n137",
+          "anchor": "five design strategies",
+          "domain": "argument-role",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "Each rule answers one of the five complaints from the formative study.",
+          "gloss": "the redesign in 5 rules"
+        },
+        {
+          "id": "n138",
+          "anchor": "Future Risk Score Prediction",
+          "domain": "ml",
+          "category": "vocab",
+          "display": "inline",
+          "content": "forecast, don't just label now",
+          "gloss": "forecast, don't just label now"
+        },
+        {
+          "id": "n139",
+          "anchor": "Accessible Model Explanation",
+          "domain": "ml",
+          "category": "vocab",
+          "display": "inline",
+          "content": "explain itself, plainly",
+          "gloss": "explain itself, plainly"
+        },
+        {
+          "id": "n140",
+          "anchor": "Actionable Insights and Suggestions",
+          "domain": "hci",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "tell them what to do next",
+          "gloss": "tell them what to do next"
+        },
+        {
+          "id": "n141",
+          "anchor": "Displaying Uncertainty beyond the Risk Score",
+          "domain": "stats",
+          "category": "vocab",
+          "display": "inline",
+          "content": "show the doubt, not just the number",
+          "gloss": "show the doubt, not just the number"
+        },
+        {
+          "id": "n142",
+          "anchor": "Supporting Intermediate Stages",
+          "domain": "argument-role",
+          "category": "argument-role",
+          "display": "inline",
+          "content": "The big one: this single shift is what the whole paper argues for.",
+          "gloss": "help the middle, not the verdict"
+        }
+      ]
+    },
+    "s27": {
+      "annotations": [
+        {
+          "id": "n143",
+          "anchor": "predictive algorithm",
+          "domain": "ml",
+          "category": "vocab",
+          "display": "inline",
+          "content": "the forecasting engine",
+          "gloss": "the forecasting engine"
+        },
+        {
+          "id": "n144",
+          "anchor": "future prediction of sepsis risk scores",
+          "domain": "clinical",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "The old tool answered 'is it sepsis now?'. This answers 'where is this going in the next few hours?'",
+          "gloss": "where the risk is heading"
+        },
+        {
+          "id": "n145",
+          "anchor": "time-series plot",
+          "domain": "stats",
+          "category": "vocab",
+          "display": "inline",
+          "content": "A line chart of risk across hours — easy to read at a glance.",
+          "gloss": "a value drawn over time"
+        },
+        {
+          "id": "n146",
+          "anchor": "the solid line",
+          "domain": "ml",
+          "category": "background",
+          "display": "inline",
+          "content": "what has happened so far",
+          "gloss": "what has happened so far"
+        },
+        {
+          "id": "n147",
+          "anchor": "the dashed line",
+          "domain": "ml",
+          "category": "background",
+          "display": "inline",
+          "content": "Solid = history, dashed = prediction. The dashed part is the whole point: it buys time to act early.",
+          "gloss": "the model's forecast ahead",
+          "example": "E.g. solid stops at now (risk 13); dashed climbs to ~30 over the next 10 hours → act early."
+        }
+      ]
+    },
+    "s28": {
+      "annotations": [
+        {
+          "id": "n148",
+          "anchor": "predictive algorithm",
+          "domain": "ml",
+          "category": "vocab",
+          "display": "inline",
+          "content": "the forecasting engine",
+          "gloss": "the forecasting engine"
+        },
+        {
+          "id": "n149",
+          "anchor": "future prediction of sepsis risk scores",
+          "domain": "clinical",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "The old tool answered 'is it sepsis now?'. This answers 'where is this going in the next few hours?'",
+          "gloss": "where the risk is heading"
+        },
+        {
+          "id": "n150",
+          "anchor": "time-series plot",
+          "domain": "stats",
+          "category": "vocab",
+          "display": "inline",
+          "content": "A line chart of risk across hours — easy to read at a glance.",
+          "gloss": "a value drawn over time"
+        },
+        {
+          "id": "n151",
+          "anchor": "the solid line",
+          "domain": "ml",
+          "category": "background",
+          "display": "inline",
+          "content": "what has happened so far",
+          "gloss": "what has happened so far"
+        },
+        {
+          "id": "n152",
+          "anchor": "the dashed line",
+          "domain": "ml",
+          "category": "background",
+          "display": "inline",
+          "content": "Solid = history, dashed = prediction. The dashed part is the whole point: it buys time to act early.",
+          "gloss": "the model's forecast ahead",
+          "example": "E.g. solid stops at now (risk 13); dashed climbs to ~30 over the next 10 hours → act early."
+        }
+      ]
+    },
+    "s29": {
+      "annotations": [
+        {
+          "id": "n153",
+          "anchor": "uncertainty range",
+          "domain": "stats",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "Not 'risk is 30%' but 'around 30%, give or take' — honesty about how sure the model is.",
+          "gloss": "the 'give or take'"
+        },
+        {
+          "id": "n154",
+          "anchor": "gray area",
+          "domain": "stats",
+          "category": "background",
+          "display": "inline",
+          "content": "The wider the band, the less sure the model — shown around the forecast line.",
+          "gloss": "the shaded band of doubt"
+        },
+        {
+          "id": "n155",
+          "anchor": "confidence intervals",
+          "domain": "stats",
+          "category": "vocab",
+          "display": "inline",
+          "content": "A common way to draw uncertainty; chosen here because studies show people trust it.",
+          "gloss": "a standard 'give or take' band"
+        },
+        {
+          "id": "n156",
+          "anchor": "evoke high levels of trust",
+          "domain": "hci",
+          "category": "argument-role",
+          "display": "inline",
+          "content": "They picked this picture because it makes doctors trust the tool — adoption matters as much as accuracy.",
+          "gloss": "a design choice for trust, not math"
+        }
+      ]
+    },
+    "s30": {
+      "annotations": [
+        {
+          "id": "n157",
+          "anchor": "feature important visualization",
+          "domain": "ml",
+          "category": "vocab",
+          "display": "inline",
+          "content": "A ranking of which lab values are driving the prediction — doubles as the model's explanation.",
+          "gloss": "which inputs mattered most"
+        },
+        {
+          "id": "n158",
+          "anchor": "lab tests recommendation function",
+          "domain": "clinical",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "The feature clinicians loved: a concrete next action that fits their 'gather data' step.",
+          "gloss": "tells you which test to run next"
+        },
+        {
+          "id": "n159",
+          "anchor": "ranked by their importance",
+          "domain": "stats",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "Ordered by how much each test would shrink the model's uncertainty.",
+          "gloss": "most useful test on top"
+        },
+        {
+          "id": "n160",
+          "anchor": "the red dashed line",
+          "domain": "ml",
+          "category": "background",
+          "display": "inline",
+          "content": "the 'what if' forecast",
+          "gloss": "the 'what if' forecast"
+        },
+        {
+          "id": "n161",
+          "anchor": "counterfactual values",
+          "domain": "ml",
+          "category": "vocab",
+          "display": "inline",
+          "content": "Estimated results for a test you haven't done yet, so you can weigh whether it's worth it.",
+          "gloss": "a 'what if I ran this test?' preview",
+          "example": "E.g. you havent run a lactate test → it previews: ‘this would likely push risk from 13 to 25’."
+        }
+      ]
+    },
+    "s31": {
+      "annotations": [
+        {
+          "id": "n162",
+          "anchor": "feature important visualization",
+          "domain": "ml",
+          "category": "vocab",
+          "display": "inline",
+          "content": "A ranking of which lab values are driving the prediction — doubles as the model's explanation.",
+          "gloss": "which inputs mattered most"
+        },
+        {
+          "id": "n163",
+          "anchor": "lab tests recommendation function",
+          "domain": "clinical",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "The feature clinicians loved: a concrete next action that fits their 'gather data' step.",
+          "gloss": "tells you which test to run next"
+        },
+        {
+          "id": "n164",
+          "anchor": "ranked by their importance",
+          "domain": "stats",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "Ordered by how much each test would shrink the model's uncertainty.",
+          "gloss": "most useful test on top"
+        },
+        {
+          "id": "n165",
+          "anchor": "the red dashed line",
+          "domain": "ml",
+          "category": "background",
+          "display": "inline",
+          "content": "the 'what if' forecast",
+          "gloss": "the 'what if' forecast"
+        },
+        {
+          "id": "n166",
+          "anchor": "counterfactual values",
+          "domain": "ml",
+          "category": "vocab",
+          "display": "inline",
+          "content": "Estimated results for a test you haven't done yet, so you can weigh whether it's worth it.",
+          "gloss": "a 'what if I ran this test?' preview",
+          "example": "E.g. you havent run a lactate test → it previews: ‘this would likely push risk from 13 to 25’."
+        }
+      ]
+    },
+    "s32": {
+      "annotations": [
+        {
+          "id": "n167",
+          "anchor": "Recurrent Neural Network (RNN)",
+          "domain": "ml",
+          "category": "vocab",
+          "display": "inline",
+          "content": "Built to process things in order, feeding each step's memory into the next — good for a timeline.",
+          "gloss": "a network that reads sequences"
+        },
+        {
+          "id": "n168",
+          "anchor": "irregular time intervals",
+          "domain": "clinical",
+          "category": "background",
+          "display": "inline",
+          "content": "Real records are messy — readings come at odd hours, some not at all. The model must cope with gaps.",
+          "gloss": "labs taken at random times"
+        },
+        {
+          "id": "n169",
+          "anchor": "Long Short-Term Memory (LSTM)",
+          "domain": "ml",
+          "category": "vocab",
+          "display": "inline",
+          "content": "A neural net that holds onto what mattered earlier — so last night's reading still informs today's.",
+          "gloss": "an RNN that remembers longer"
+        },
+        {
+          "id": "n170",
+          "anchor": "variable attention module",
+          "domain": "ml",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "Handles a varying number of inputs and learns what to focus on — also produces the explanation.",
+          "gloss": "weighs which inputs matter"
+        },
+        {
+          "id": "n171",
+          "anchor": "attention weights",
+          "domain": "ml",
+          "category": "vocab",
+          "display": "inline",
+          "content": "The 'focus' numbers double as a plain-language reason for the prediction.",
+          "gloss": "how much each input counted"
+        }
+      ]
+    },
+    "s33": {
+      "annotations": [
+        {
+          "id": "n172",
+          "anchor": "Recurrent Neural Network (RNN)",
+          "domain": "ml",
+          "category": "vocab",
+          "display": "inline",
+          "content": "Built to process things in order, feeding each step's memory into the next — good for a timeline.",
+          "gloss": "a network that reads sequences"
+        },
+        {
+          "id": "n173",
+          "anchor": "irregular time intervals",
+          "domain": "clinical",
+          "category": "background",
+          "display": "inline",
+          "content": "Real records are messy — readings come at odd hours, some not at all. The model must cope with gaps.",
+          "gloss": "labs taken at random times"
+        },
+        {
+          "id": "n174",
+          "anchor": "Long Short-Term Memory (LSTM)",
+          "domain": "ml",
+          "category": "vocab",
+          "display": "inline",
+          "content": "A neural net that holds onto what mattered earlier — so last night's reading still informs today's.",
+          "gloss": "an RNN that remembers longer"
+        },
+        {
+          "id": "n175",
+          "anchor": "variable attention module",
+          "domain": "ml",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "Handles a varying number of inputs and learns what to focus on — also produces the explanation.",
+          "gloss": "weighs which inputs matter"
+        },
+        {
+          "id": "n176",
+          "anchor": "attention weights",
+          "domain": "ml",
+          "category": "vocab",
+          "display": "inline",
+          "content": "The 'focus' numbers double as a plain-language reason for the prediction.",
+          "gloss": "how much each input counted"
+        }
+      ]
+    },
+    "s34": {
+      "annotations": [
+        {
+          "id": "n177",
+          "anchor": "Monte Carlo Simulation (MCS)",
+          "domain": "ml",
+          "category": "vocab",
+          "display": "inline",
+          "content": "A missing value? Try 500 plausible versions, predict each, and see how much the answer swings.",
+          "gloss": "guess the gaps many times over"
+        },
+        {
+          "id": "n178",
+          "anchor": "missing values",
+          "domain": "clinical",
+          "category": "background",
+          "display": "inline",
+          "content": "labs not taken yet",
+          "gloss": "labs not taken yet"
+        },
+        {
+          "id": "n179",
+          "anchor": "standard deviation of the outputs",
+          "domain": "stats",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "If the predictions jump around a lot across guesses, the model is uncertain.",
+          "gloss": "how much the answers spread"
+        },
+        {
+          "id": "n180",
+          "anchor": "Shannon entropy",
+          "domain": "stats",
+          "category": "vocab",
+          "display": "inline",
+          "content": "50/50 coin-flip → entropy high; 99% sure either way → near 0.",
+          "gloss": "a 0–1 'how unsure' score",
+          "example": "E.g. 50/50 coin-flip → entropy ≈ 1 (max doubt); 99% sure → entropy ≈ 0."
+        },
+        {
+          "id": "n181",
+          "anchor": "collect more clinical variables",
+          "domain": "clinical",
+          "category": "argument-role",
+          "display": "inline",
+          "content": "When too unsure, the system names the one test that would reduce the doubt most.",
+          "gloss": "go get the lab that settles it"
+        }
+      ]
+    },
+    "s35": {
+      "annotations": [
+        {
+          "id": "n182",
+          "anchor": "Monte Carlo Simulation (MCS)",
+          "domain": "ml",
+          "category": "vocab",
+          "display": "inline",
+          "content": "A missing value? Try 500 plausible versions, predict each, and see how much the answer swings.",
+          "gloss": "guess the gaps many times over"
+        },
+        {
+          "id": "n183",
+          "anchor": "missing values",
+          "domain": "clinical",
+          "category": "background",
+          "display": "inline",
+          "content": "labs not taken yet",
+          "gloss": "labs not taken yet"
+        },
+        {
+          "id": "n184",
+          "anchor": "standard deviation of the outputs",
+          "domain": "stats",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "If the predictions jump around a lot across guesses, the model is uncertain.",
+          "gloss": "how much the answers spread"
+        },
+        {
+          "id": "n185",
+          "anchor": "Shannon entropy",
+          "domain": "stats",
+          "category": "vocab",
+          "display": "inline",
+          "content": "50/50 coin-flip → entropy high; 99% sure either way → near 0.",
+          "gloss": "a 0–1 'how unsure' score",
+          "example": "E.g. 50/50 coin-flip → entropy ≈ 1 (max doubt); 99% sure → entropy ≈ 0."
+        },
+        {
+          "id": "n186",
+          "anchor": "collect more clinical variables",
+          "domain": "clinical",
+          "category": "argument-role",
+          "display": "inline",
+          "content": "When too unsure, the system names the one test that would reduce the doubt most.",
+          "gloss": "go get the lab that settles it"
+        }
+      ]
+    },
+    "s36": {
+      "annotations": [
+        {
+          "id": "n187",
+          "anchor": "full observation setting models",
+          "domain": "stats",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "A model that already has all the data — the ceiling SepsisLab nearly reaches.",
+          "gloss": "best case: knows every lab"
+        },
+        {
+          "id": "n188",
+          "anchor": "masked setting models",
+          "domain": "stats",
+          "category": "background",
+          "display": "inline",
+          "content": "A model with almost no data, like a patient who just walked into the ER.",
+          "gloss": "worst case: a fresh arrival"
+        },
+        {
+          "id": "n189",
+          "anchor": "approximately 10%",
+          "domain": "stats",
+          "category": "numbers",
+          "display": "inline",
+          "content": "Their LSTM rose from ~0.79 (data-starved) toward ~0.89 — near the ~0.90 full-data ceiling.",
+          "gloss": "the accuracy gain (AUC)",
+          "example": "E.g. AUC rose from ~0.79 (data-starved) toward ~0.89, near the ~0.90 full-data ceiling."
+        },
+        {
+          "id": "n190",
+          "anchor": "9.6% extra laboratory values",
+          "domain": "stats",
+          "category": "numbers",
+          "display": "inline",
+          "content": "Big accuracy jump for a small extra cost — the whole pitch of the lab recommendation.",
+          "gloss": "for only a few more tests"
+        },
+        {
+          "id": "n191",
+          "anchor": "MIMIC-III",
+          "domain": "clinical",
+          "category": "vocab",
+          "display": "inline",
+          "content": "A widely-used, de-identified database of real intensive-care data for research.",
+          "gloss": "a public ICU records dataset"
+        }
+      ]
+    },
+    "s37": {
+      "annotations": [
+        {
+          "id": "n192",
+          "anchor": "evaluation study",
+          "domain": "hci",
+          "category": "vocab",
+          "display": "inline",
+          "content": "The same six clinicians tried the prototype and were interviewed about it.",
+          "gloss": "the real-user test"
+        },
+        {
+          "id": "n193",
+          "anchor": "ease feelings of being in competition",
+          "domain": "hci",
+          "category": "argument-role",
+          "display": "inline",
+          "content": "The key win: moving the AI off the verdict made it feel like a teammate.",
+          "gloss": "felt less like a rival"
+        },
+        {
+          "id": "n194",
+          "anchor": "retain the role of final decision-maker",
+          "domain": "argument-role",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "By design the AI suggests; the clinician chooses — which is exactly what restored trust.",
+          "gloss": "the human still decides"
+        }
+      ]
+    },
+    "s38": {
+      "annotations": [
+        {
+          "id": "n195",
+          "anchor": "evaluation study",
+          "domain": "hci",
+          "category": "vocab",
+          "display": "inline",
+          "content": "The same six clinicians tried the prototype and were interviewed about it.",
+          "gloss": "the real-user test"
+        },
+        {
+          "id": "n196",
+          "anchor": "ease feelings of being in competition",
+          "domain": "hci",
+          "category": "argument-role",
+          "display": "inline",
+          "content": "The key win: moving the AI off the verdict made it feel like a teammate.",
+          "gloss": "felt less like a rival"
+        },
+        {
+          "id": "n197",
+          "anchor": "retain the role of final decision-maker",
+          "domain": "argument-role",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "By design the AI suggests; the clinician chooses — which is exactly what restored trust.",
+          "gloss": "the human still decides"
+        }
+      ]
+    },
+    "s39": {
+      "annotations": [
+        {
+          "id": "n198",
+          "anchor": "evaluation study",
+          "domain": "hci",
+          "category": "vocab",
+          "display": "inline",
+          "content": "The same six clinicians tried the prototype and were interviewed about it.",
+          "gloss": "the real-user test"
+        },
+        {
+          "id": "n199",
+          "anchor": "ease feelings of being in competition",
+          "domain": "hci",
+          "category": "argument-role",
+          "display": "inline",
+          "content": "The key win: moving the AI off the verdict made it feel like a teammate.",
+          "gloss": "felt less like a rival"
+        },
+        {
+          "id": "n200",
+          "anchor": "retain the role of final decision-maker",
+          "domain": "argument-role",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "By design the AI suggests; the clinician chooses — which is exactly what restored trust.",
+          "gloss": "the human still decides"
+        }
+      ]
+    },
+    "s40": {
+      "annotations": [
+        {
+          "id": "n201",
+          "anchor": "evaluation study",
+          "domain": "hci",
+          "category": "vocab",
+          "display": "inline",
+          "content": "The same six clinicians tried the prototype and were interviewed about it.",
+          "gloss": "the real-user test"
+        },
+        {
+          "id": "n202",
+          "anchor": "ease feelings of being in competition",
+          "domain": "hci",
+          "category": "argument-role",
+          "display": "inline",
+          "content": "The key win: moving the AI off the verdict made it feel like a teammate.",
+          "gloss": "felt less like a rival"
+        },
+        {
+          "id": "n203",
+          "anchor": "retain the role of final decision-maker",
+          "domain": "argument-role",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "By design the AI suggests; the clinician chooses — which is exactly what restored trust.",
+          "gloss": "the human still decides"
+        }
+      ]
+    },
+    "s41": {
+      "annotations": [
+        {
+          "id": "n204",
+          "anchor": "highly uncertain, high-stakes, and time-sensitive",
+          "domain": "argument-role",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "The paper's thesis about WHERE its lesson generalizes — these three traits together.",
+          "gloss": "the recipe where this idea fits"
+        },
+        {
+          "id": "n205",
+          "anchor": "stroke, heart attack, and meningitis",
+          "domain": "clinical",
+          "category": "background",
+          "display": "inline",
+          "content": "other fast, deadly calls",
+          "gloss": "other fast, deadly calls"
+        },
+        {
+          "id": "n206",
+          "anchor": "major depressive disorder with suicidal ideation",
+          "domain": "clinical",
+          "category": "background",
+          "display": "inline",
+          "content": "high-stakes mental-health calls",
+          "gloss": "high-stakes mental-health calls"
+        },
+        {
+          "id": "n207",
+          "anchor": "non-healthcare complex decision-making",
+          "domain": "argument-role",
+          "category": "argument-role",
+          "display": "inline",
+          "content": "Disaster response, military, business crises — anywhere fast, uncertain, high-stakes calls are made.",
+          "gloss": "even beyond medicine"
+        }
+      ]
+    },
+    "s42": {
+      "annotations": [
+        {
+          "id": "n208",
+          "anchor": "highly uncertain, high-stakes, and time-sensitive",
+          "domain": "argument-role",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "The paper's thesis about WHERE its lesson generalizes — these three traits together.",
+          "gloss": "the recipe where this idea fits"
+        },
+        {
+          "id": "n209",
+          "anchor": "stroke, heart attack, and meningitis",
+          "domain": "clinical",
+          "category": "background",
+          "display": "inline",
+          "content": "other fast, deadly calls",
+          "gloss": "other fast, deadly calls"
+        },
+        {
+          "id": "n210",
+          "anchor": "major depressive disorder with suicidal ideation",
+          "domain": "clinical",
+          "category": "background",
+          "display": "inline",
+          "content": "high-stakes mental-health calls",
+          "gloss": "high-stakes mental-health calls"
+        },
+        {
+          "id": "n211",
+          "anchor": "non-healthcare complex decision-making",
+          "domain": "argument-role",
+          "category": "argument-role",
+          "display": "inline",
+          "content": "Disaster response, military, business crises — anywhere fast, uncertain, high-stakes calls are made.",
+          "gloss": "even beyond medicine"
+        }
+      ]
+    },
+    "s43": {
+      "annotations": [
+        {
+          "id": "n212",
+          "anchor": "cognitive load",
+          "domain": "hci",
+          "category": "vocab",
+          "display": "inline",
+          "content": "Richer tools can overwhelm — participants asked for info a step at a time.",
+          "gloss": "more for the brain to juggle"
+        },
+        {
+          "id": "n213",
+          "anchor": "mistakes and errors made by AI",
+          "domain": "ml",
+          "category": "argument-role",
+          "display": "inline",
+          "content": "the model can still be wrong",
+          "gloss": "the model can still be wrong"
+        },
+        {
+          "id": "n214",
+          "anchor": "potential biases embedded in AI algorithms",
+          "domain": "ml",
+          "category": "argument-role",
+          "display": "inline",
+          "content": "Models can inherit skew from their training data — not solved by this redesign.",
+          "gloss": "unfair patterns baked in"
+        },
+        {
+          "id": "n215",
+          "anchor": "over-dependence on AI systems",
+          "domain": "hci",
+          "category": "argument-role",
+          "display": "inline",
+          "content": "Trust it too much and your own vigilance dulls — a subtle long-term risk.",
+          "gloss": "leaning on it too hard"
+        }
+      ]
+    },
+    "s44": {
+      "annotations": [
+        {
+          "id": "n216",
+          "anchor": "study population is limited",
+          "domain": "stats",
+          "category": "argument-role",
+          "display": "inline",
+          "content": "Six clinicians at one site — findings are suggestive, not definitive.",
+          "gloss": "small sample, one hospital"
+        },
+        {
+          "id": "n217",
+          "anchor": "not integrated into the EHR system",
+          "domain": "clinical",
+          "category": "background",
+          "display": "inline",
+          "content": "It was tested as a mock-up, so real-world behaviour may differ.",
+          "gloss": "a prototype, not a live tool"
+        },
+        {
+          "id": "n218",
+          "anchor": "design probe",
+          "domain": "hci",
+          "category": "vocab",
+          "display": "inline",
+          "content": "The prototype's job was to provoke reactions and surface needs, not to prove performance.",
+          "gloss": "a prompt to spark feedback"
+        },
+        {
+          "id": "n219",
+          "anchor": "different responsibilities",
+          "domain": "clinical",
+          "category": "argument-role",
+          "display": "inline",
+          "content": "A parting insight: one-size-fits-all interfaces overlook distinct clinical roles.",
+          "gloss": "nurses vs doctors need different tools"
+        }
+      ]
+    }
+  }
+}
