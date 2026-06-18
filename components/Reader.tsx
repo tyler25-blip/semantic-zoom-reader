@@ -11,8 +11,8 @@ import { OriginalMode } from "./OriginalMode";
 
 type Layout = "column" | "magazine";
 
-// Depth axis (deepening): 5% skeleton → "augmented" (150%) → "original" (clean 100%)
-export type ZoomLevel = "augmented" | "original";
+// Depth axis (deepening): 5% skeleton → "augmented" (150%) → "annotation-detail" → "original" (clean 100%)
+export type ZoomLevel = "augmented" | "annotation-detail" | "original";
 
 export function Reader({
   paper,
@@ -34,15 +34,18 @@ export function Reader({
   const [hovered, setHovered] = React.useState<string | null>(null);
   const [originRect, setOriginRect] = React.useState<DOMRect | null>(null);
   const [flashSegment, setFlashSegment] = React.useState<string | null>(null);
+  const [focusedAnn, setFocusedAnn] = React.useState<string | null>(null);
 
   // refs mirror state for the global pinch listener
   const zoomRef = React.useRef<string | null>(null);
   const levelRef = React.useRef<ZoomLevel>("augmented");
   const hoveredRef = React.useRef<string | null>(null);
   const flashTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  const focusedAnnRef = React.useRef<string | null>(null);
   zoomRef.current = zoomSegment;
   levelRef.current = zoomLevel;
   hoveredRef.current = hovered;
+  focusedAnnRef.current = focusedAnn;
 
   const openSegment = (id: string, rect?: DOMRect) => {
     if (rect) setOriginRect(rect);
@@ -51,18 +54,27 @@ export function Reader({
     setZoomLevel("augmented"); // zoom-in lands on the 150% assist layer first
   };
   const closeZoom = () => {
-    // remember where we came from: pulse + scroll that sentence back into view
     const from = zoomRef.current;
     setZoomSegment(null);
+    setFocusedAnn(null);
     if (from) {
       setFlashSegment(from);
       if (flashTimer.current) clearTimeout(flashTimer.current);
       flashTimer.current = setTimeout(() => setFlashSegment(null), 1600);
     }
   };
-  const zoomIn = () => setZoomLevel((l) => (l === "augmented" ? "original" : l));
+  const zoomIn = () => {
+    if (levelRef.current === "augmented") {
+      // if an annotation card is open, dive into its detail view; else go to clean original
+      if (focusedAnnRef.current) setZoomLevel("annotation-detail");
+      else setZoomLevel("original");
+    } else if (levelRef.current === "annotation-detail") {
+      setZoomLevel("original");
+    }
+  };
   const zoomOut = () => {
     if (levelRef.current === "original") setZoomLevel("augmented");
+    else if (levelRef.current === "annotation-detail") { setZoomLevel("augmented"); setFocusedAnn(null); }
     else closeZoom();
   };
 
@@ -185,6 +197,8 @@ export function Reader({
             segmentId={zoomSegment}
             level={zoomLevel}
             originRect={originRect}
+            focusedAnn={focusedAnn}
+            onFocusAnn={setFocusedAnn}
             onZoomIn={zoomIn}
             onZoomOut={zoomOut}
             onClose={closeZoom}

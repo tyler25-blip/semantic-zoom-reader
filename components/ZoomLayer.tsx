@@ -5,6 +5,8 @@ import type { Paper, DomainId, Annotation as Ann, OriginalParagraph } from "@/li
 import { Highlight } from "./ds/Highlight";
 import { Annotation } from "./ds/Annotation";
 import { Icon } from "./ds/Icons";
+import { categoryStyle } from "./annotationStyle";
+import { NumberVisual } from "./NumberVisual";
 import type { ZoomLevel } from "./Reader";
 
 interface Match { annId: string; anchor: string; start: number; len: number; }
@@ -34,6 +36,8 @@ export function ZoomLayer({
   segmentId,
   level,
   originRect,
+  focusedAnn,
+  onFocusAnn,
   onZoomIn,
   onZoomOut,
   onClose,
@@ -41,8 +45,10 @@ export function ZoomLayer({
   paper: Paper;
   unfamiliar: Set<DomainId>;
   segmentId: string;
-  level: ZoomLevel; // "augmented" = 150%, "original" = clean 100%
+  level: ZoomLevel;
   originRect: DOMRect | null;
+  focusedAnn: string | null;
+  onFocusAnn: (id: string | null) => void;
   onZoomIn: () => void;
   onZoomOut: () => void;
   onClose: () => void;
@@ -82,11 +88,23 @@ export function ZoomLayer({
 
   const openCard = (annId: string) => {
     setOpenAnn(annId);
+    onFocusAnn(annId);
     requestAnimationFrame(() => positionCard(annId));
   };
 
+  const closeCard = () => {
+    setOpenAnn(null);
+    onFocusAnn(null);
+  };
+
+  // clear floating card when entering annotation-detail
+  React.useEffect(() => {
+    if (level === "annotation-detail") setOpenAnn(null);
+  }, [level]);
+
   const openAnnObj = openAnn ? anns.find((a) => a.id === openAnn) ?? null : null;
-  const depth = level === "augmented" ? "150%" : "100%";
+  const focusedAnnObj = focusedAnn ? anns.find((a) => a.id === focusedAnn) ?? null : null;
+  const depth = level === "augmented" ? "150%" : level === "annotation-detail" ? "Note" : "100%";
 
   // The card grows out of the clicked sentence and collapses back into it.
   const origin = React.useMemo(() => {
@@ -135,64 +153,90 @@ export function ZoomLayer({
             )}
             <span style={{ width: 1, height: 22, background: "var(--border)", margin: "0 2px" }} />
             <ZoomBtn label="Zoom out" icon="zoomOut" onClick={onZoomOut} />
-            <ZoomBtn label={level === "augmented" ? "Zoom in to clean original" : "Deepest"} icon="zoomIn" onClick={onZoomIn} disabled={level === "original"} primary={level === "augmented"} />
+            <ZoomBtn
+              label={
+                level === "augmented" && openAnn
+                  ? "Expand this annotation"
+                  : level === "annotation-detail"
+                    ? "Zoom to clean original"
+                    : level === "augmented"
+                      ? "Zoom to clean original"
+                      : "Deepest"
+              }
+              icon="zoomIn"
+              onClick={onZoomIn}
+              disabled={level === "original"}
+              primary={level === "augmented" || level === "annotation-detail"}
+            />
             <span style={{ width: 1, height: 22, background: "var(--border)", margin: "0 2px" }} />
             <ZoomBtn label="Close" icon="x" onClick={onClose} />
           </div>
         </div>
 
         {/* body */}
-        <div style={{ position: "relative", overflow: "auto", padding: "24px 26px 36px" }} onClick={() => setOpenAnn(null)}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
-            <span className="eyebrow" style={{ color: "var(--text-muted)" }}>
-              Original · {sources.map((s) => s.label).join(" + ")}
-            </span>
-            <span className="eyebrow" style={{ color: showNotes ? "var(--accent)" : "var(--text-faint)" }}>
-              {level === "augmented" ? (hideNotes ? "Notes hidden" : "Assist layer on") : "Clean original"}
-            </span>
-          </div>
+        <div style={{ position: "relative", overflow: "auto", padding: level === "annotation-detail" ? "0" : "24px 26px 36px" }} onClick={level !== "annotation-detail" ? closeCard : undefined}>
+          {level === "annotation-detail" && focusedAnnObj ? (
+            <AnnotationDetail
+              ann={focusedAnnObj}
+              sources={sources}
+              anns={anns}
+              domains={paper.domains}
+              onFocusAnn={onFocusAnn}
+            />
+          ) : (
+            <>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
+                <span className="eyebrow" style={{ color: "var(--text-muted)" }}>
+                  Original · {sources.map((s) => s.label).join(" + ")}
+                </span>
+                <span className="eyebrow" style={{ color: showNotes ? "var(--accent)" : "var(--text-faint)" }}>
+                  {level === "augmented" ? (hideNotes ? "Notes hidden" : "Assist layer on") : "Clean original"}
+                </span>
+              </div>
 
-          {showNotes && anns.length === 0 && (
-            <div style={{ marginBottom: 14, padding: "10px 13px", background: "var(--surface-sunken)", borderRadius: "var(--radius-md)", fontSize: "var(--text-annotation)", color: "var(--text-muted)", display: "flex", gap: 8, alignItems: "center" }}>
-              <span style={{ color: "var(--accent-soft)", display: "inline-flex" }}><Icon name="sparkles" size={16} /></span>
-              {allAnns.length === 0
-                ? "Nothing flagged here — the original reads straight."
-                : "No terms here from the fields you marked unfamiliar. Add fields in settings to see more."}
-            </div>
-          )}
-
-          <div ref={colRef} style={{ position: "relative" }}>
-            <div className="serif" style={{ fontSize: "var(--text-read)", lineHeight: 2.0, color: "var(--text)", maxWidth: "64ch" }}>
-              {sources.map((p, pi) => (
-                <p key={p.id} style={{ margin: pi === 0 ? "0 0 1em" : "0 0 1em" }}>
-                  {showNotes
-                    ? renderHighlighted(p.text, paraMatches[pi], anns, {
-                        openAnn, unfamiliar, isPinned, openCard,
-                        refFn: (id, el) => (anchorRefs.current[id] = el),
-                        domains: paper.domains,
-                      })
-                    : p.text}
-                </p>
-              ))}
-            </div>
-
-            {/* floating rich card, anchored beside its term */}
-            <AnimatePresence>
-              {showNotes && openAnnObj && cardPos && (
-                <motion.div
-                  key={openAnnObj.id}
-                  initial={{ opacity: 0, y: -4 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -4 }}
-                  transition={{ duration: 0.13 }}
-                  onClick={(e) => e.stopPropagation()}
-                  style={{ position: "absolute", top: cardPos.top, left: cardPos.left, zIndex: 5 }}
-                >
-                  <Annotation ann={openAnnObj} domains={paper.domains} onClose={() => setOpenAnn(null)} />
-                </motion.div>
+              {showNotes && anns.length === 0 && (
+                <div style={{ marginBottom: 14, padding: "10px 13px", background: "var(--surface-sunken)", borderRadius: "var(--radius-md)", fontSize: "var(--text-annotation)", color: "var(--text-muted)", display: "flex", gap: 8, alignItems: "center" }}>
+                  <span style={{ color: "var(--accent-soft)", display: "inline-flex" }}><Icon name="sparkles" size={16} /></span>
+                  {allAnns.length === 0
+                    ? "Nothing flagged here — the original reads straight."
+                    : "No terms here from the fields you marked unfamiliar. Add fields in settings to see more."}
+                </div>
               )}
-            </AnimatePresence>
-          </div>
+
+              <div ref={colRef} style={{ position: "relative" }}>
+                <div className="serif" style={{ fontSize: "var(--text-read)", lineHeight: 2.0, color: "var(--text)", maxWidth: "64ch" }}>
+                  {sources.map((p, pi) => (
+                    <p key={p.id} style={{ margin: "0 0 1em" }}>
+                      {showNotes
+                        ? renderHighlighted(p.text, paraMatches[pi], anns, {
+                            openAnn, unfamiliar, isPinned, openCard,
+                            refFn: (id, el) => (anchorRefs.current[id] = el),
+                            domains: paper.domains,
+                          })
+                        : p.text}
+                    </p>
+                  ))}
+                </div>
+
+                {/* floating rich card, anchored beside its term */}
+                <AnimatePresence>
+                  {showNotes && openAnnObj && cardPos && (
+                    <motion.div
+                      key={openAnnObj.id}
+                      initial={{ opacity: 0, y: -4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -4 }}
+                      transition={{ duration: 0.13 }}
+                      onClick={(e) => e.stopPropagation()}
+                      style={{ position: "absolute", top: cardPos.top, left: cardPos.left, zIndex: 5 }}
+                    >
+                      <Annotation ann={openAnnObj} domains={paper.domains} onClose={closeCard} />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            </>
+          )}
         </div>
 
         {/* footer */}
@@ -267,8 +311,8 @@ function truncate(s: string, n: number) {
 }
 
 function DepthLadder({ depth }: { depth: string }) {
-  const steps = ["5%", "150%", "100%"];
-  const labels: Record<string, string> = { "5%": "Simplified", "150%": "Assisted", "100%": "Original" };
+  const steps = ["5%", "150%", "Note", "100%"];
+  const labels: Record<string, string> = { "5%": "Simplified", "150%": "Assisted", "Note": "Annotation", "100%": "Original" };
   const idx = steps.indexOf(depth);
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -295,6 +339,151 @@ function DepthLadder({ depth }: { depth: string }) {
       })}
     </div>
   );
+}
+
+/* ---- Annotation detail view (fourth zoom level) ---- */
+
+function AnnotationDetail({
+  ann, sources, anns, domains, onFocusAnn,
+}: {
+  ann: Ann;
+  sources: OriginalParagraph[];
+  anns: Ann[];
+  domains: Paper["domains"];
+  onFocusAnn: (id: string) => void;
+}) {
+  const style = categoryStyle(ann.category);
+  const domain = domains.find((d) => d.id === ann.domain);
+  const contextPara = sources.find((p) => p.text.includes(ann.anchor));
+
+  return (
+    <div style={{ padding: "28px 28px 36px" }}>
+      {/* category + domain tags */}
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 18 }}>
+        <span style={{
+          fontFamily: "var(--font-sans)", fontSize: "var(--text-caption)",
+          textTransform: "uppercase", letterSpacing: "var(--tracking-caps)",
+          fontWeight: "var(--weight-semibold)", color: style.color,
+          background: style.tint, padding: "3px 10px", borderRadius: "var(--radius-full)",
+        }}>
+          {style.label}
+        </span>
+        {domain && (
+          <span style={{
+            fontFamily: "var(--font-sans)", fontSize: "var(--text-caption)",
+            color: "var(--text-muted)", border: "1px solid var(--border)",
+            padding: "3px 10px", borderRadius: "var(--radius-full)",
+          }}>
+            {domain.name}
+          </span>
+        )}
+      </div>
+
+      {/* anchor term — large, serif, underlined in category hue */}
+      <div className="serif" style={{
+        fontSize: "var(--text-h1)", fontWeight: 600, lineHeight: "var(--leading-snug)",
+        marginBottom: 6, color: "var(--text)",
+        textDecoration: `underline ${style.underline} ${style.color}`,
+        textDecorationSkipInk: "auto",
+      }}>
+        {ann.anchor}
+      </div>
+
+      {/* short italic gloss */}
+      {ann.gloss && (
+        <p style={{
+          fontFamily: "var(--font-sans)", fontStyle: "italic",
+          fontSize: "var(--text-annotation)", color: "var(--text-muted)",
+          margin: "0 0 20px",
+        }}>
+          — {ann.gloss}
+        </p>
+      )}
+
+      {/* full explanation */}
+      <p style={{
+        fontFamily: "var(--font-sans)", fontSize: "var(--text-h3)",
+        lineHeight: 1.75, color: "var(--text)", margin: "0 0 20px",
+      }}>
+        {ann.content}
+      </p>
+
+      {/* example block */}
+      {ann.example && (
+        <blockquote style={{
+          borderLeft: `3px solid ${style.color}`, background: style.tint,
+          margin: "0 0 20px", padding: "12px 16px",
+          borderRadius: `0 var(--radius-md) var(--radius-md) 0`,
+        }}>
+          <p style={{
+            fontFamily: "var(--font-sans)", fontStyle: "italic",
+            fontSize: "var(--text-annotation)", lineHeight: "var(--leading-normal)",
+            color: "var(--text)", margin: 0,
+          }}>
+            {ann.example}
+          </p>
+        </blockquote>
+      )}
+
+      {/* number visual */}
+      {ann.viz && <div style={{ marginBottom: 20 }}><NumberVisual viz={ann.viz} /></div>}
+
+      {/* in context — find the source sentence and highlight the anchor term */}
+      {contextPara && (
+        <div style={{ marginTop: 20, paddingTop: 20, borderTop: "1px solid var(--border)" }}>
+          <div className="eyebrow" style={{ color: "var(--text-faint)", marginBottom: 12 }}>In context</div>
+          <p className="serif" style={{ fontSize: "var(--text-read)", lineHeight: 1.9, color: "var(--text)", margin: 0 }}>
+            {renderInContext(contextPara.text, ann.anchor, style.color)}
+          </p>
+        </div>
+      )}
+
+      {/* navigate between all annotations in this passage */}
+      {anns.length > 1 && (
+        <div style={{ marginTop: 24, paddingTop: 16, borderTop: "1px solid var(--border)" }}>
+          <div className="eyebrow" style={{ color: "var(--text-faint)", marginBottom: 10 }}>
+            All terms in this passage
+          </div>
+          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+            {anns.map((a) => {
+              const s = categoryStyle(a.category);
+              const active = a.id === ann.id;
+              return (
+                <button
+                  key={a.id}
+                  onClick={() => onFocusAnn(a.id)}
+                  title={s.label}
+                  style={{
+                    padding: "4px 11px",
+                    borderRadius: "var(--radius-full)",
+                    border: `1px solid ${active ? s.color : "var(--border)"}`,
+                    background: active ? s.tint : "transparent",
+                    color: active ? s.color : "var(--text-muted)",
+                    fontSize: "var(--text-caption)",
+                    fontFamily: "var(--font-sans)",
+                    cursor: "pointer",
+                    fontWeight: active ? "var(--weight-semibold)" : "var(--weight-regular)",
+                  }}
+                >
+                  {a.anchor}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function renderInContext(text: string, anchor: string, color: string): React.ReactNode {
+  const idx = text.indexOf(anchor);
+  if (idx < 0) return text;
+  return [
+    text.slice(0, idx),
+    <mark key="mark" style={{ background: "transparent", color, fontWeight: 600, textDecoration: `underline solid ${color}` }}>{anchor}</mark>,
+    text.slice(idx + anchor.length),
+  ];
 }
 
 function ZoomBtn({ label, icon, onClick, disabled, primary, active }: { label: string; icon: string; onClick: () => void; disabled?: boolean; primary?: boolean; active?: boolean }) {
