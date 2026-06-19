@@ -15,7 +15,7 @@ export function OriginalMode({ paper }: { paper: Paper }) {
     <div style={{ flex: 1, display: "flex", flexDirection: "column", minHeight: 0 }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, padding: "12px 24px", borderBottom: "1px solid var(--border)", flexWrap: "wrap" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
-          <span className="eyebrow" style={{ color: "var(--text-muted)" }}>Original · 100% · full PDF</span>
+          <span className="eyebrow" style={{ color: "var(--text-muted)" }}>Original · full PDF</span>
           <span className="serif" style={{ fontSize: "var(--text-annotation)", color: "var(--text)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "52ch" }}>
             {paper.meta.title}
           </span>

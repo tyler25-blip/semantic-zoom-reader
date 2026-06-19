@@ -30,6 +30,10 @@ export interface Segment {
   break?: boolean; // starts a new paragraph in the 5% article
   text: string;
   source: string[]; // original paragraph ids this segment zooms into
+  // Verbatim slice(s) of the source paragraph(s) this sentence distils. When a
+  // paragraph backs several skeleton sentences, each gets a different focus so
+  // zooming in highlights *its* part and dims the rest (no more "same passage").
+  focus?: string[];
   tags: DifficultyTag[];
 }
 

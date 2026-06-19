@@ -10,6 +10,37 @@ import { NumberVisual } from "./NumberVisual";
 import type { ZoomLevel } from "./Reader";
 
 interface Match { annId: string; anchor: string; start: number; len: number; }
+interface Range { start: number; len: number; }
+
+const FOCUS_DIM = 1; // no dimming — the whole original reads at full ink; the highlighter marks carry the emphasis
+
+// Where in a paragraph the current skeleton sentence's focus quote(s) land.
+function matchFocus(text: string, focus?: string[]): Range[] {
+  if (!focus || !focus.length) return [];
+  const out: Range[] = [];
+  for (const f of focus) {
+    const idx = text.indexOf(f);
+    if (idx >= 0) out.push({ start: idx, len: f.length });
+  }
+  return out.sort((a, b) => a.start - b.start);
+}
+
+const inFocus = (pos: number, ranges: Range[]) =>
+  ranges.length === 0 || ranges.some((r) => pos >= r.start && pos < r.start + r.len);
+
+// Clean original (no notes): full-strength focus, dimmed context around it.
+function renderFocusPlain(text: string, ranges: Range[]): React.ReactNode {
+  if (!ranges.length) return text;
+  const nodes: React.ReactNode[] = [];
+  let cursor = 0;
+  for (const r of ranges) {
+    if (r.start > cursor) nodes.push(<span key={`d${cursor}`} style={{ opacity: FOCUS_DIM }}>{text.slice(cursor, r.start)}</span>);
+    nodes.push(text.slice(r.start, r.start + r.len));
+    cursor = r.start + r.len;
+  }
+  if (cursor < text.length) nodes.push(<span key={`d${cursor}`} style={{ opacity: FOCUS_DIM }}>{text.slice(cursor)}</span>);
+  return nodes;
+}
 
 function matchAnchors(text: string, anns: Ann[], used: Set<string>): Match[] {
   const found: Match[] = [];
@@ -73,6 +104,8 @@ export function ZoomLayer({
 
   const used = new Set<string>();
   const paraMatches = sources.map((p) => matchAnchors(p.text, anns, used));
+  // which slice of each paragraph THIS skeleton sentence distils (dim the rest)
+  const paraFocus = sources.map((p) => matchFocus(p.text, segment.focus));
 
   const positionCard = (annId: string) => {
     const el = anchorRefs.current[annId];
@@ -104,7 +137,7 @@ export function ZoomLayer({
 
   const openAnnObj = openAnn ? anns.find((a) => a.id === openAnn) ?? null : null;
   const focusedAnnObj = focusedAnn ? anns.find((a) => a.id === focusedAnn) ?? null : null;
-  const depth = level === "augmented" ? "150%" : level === "annotation-detail" ? "Note" : "100%";
+  const depth = level === "augmented" ? "Assisted" : level === "annotation-detail" ? "Note" : "Original";
 
   // The card grows out of the clicked sentence and collapses back into it.
   const origin = React.useMemo(() => {
@@ -212,8 +245,8 @@ export function ZoomLayer({
                             openAnn, unfamiliar, isPinned, openCard,
                             refFn: (id, el) => (anchorRefs.current[id] = el),
                             domains: paper.domains,
-                          })
-                        : p.text}
+                          }, paraFocus[pi])
+                        : renderFocusPlain(p.text, paraFocus[pi])}
                     </p>
                   ))}
                 </div>
@@ -241,7 +274,7 @@ export function ZoomLayer({
 
         {/* footer */}
         <div style={{ flexShrink: 0, borderTop: "1px solid var(--border)", padding: "9px 18px", fontSize: "var(--text-caption)", color: "var(--text-faint)", display: "flex", justifyContent: "space-between", gap: 12 }}>
-          <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>5% retold this as: “{truncate(segment.text, 58)}”</span>
+          <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>In plain words: “{truncate(segment.text, 58)}”</span>
           <span style={{ whiteSpace: "nowrap" }}>pinch / +−/ Esc</span>
         </div>
       </motion.div>
@@ -262,16 +295,32 @@ function renderHighlighted(
     openCard: (id: string) => void;
     refFn: (id: string, el: HTMLElement | null) => void;
     domains: Paper["domains"];
-  }
+  },
+  focusRanges: Range[] = []
 ): React.ReactNode {
-  if (!matches.length) return text;
+  if (!matches.length) return renderFocusPlain(text, focusRanges);
   const nodes: React.ReactNode[] = [];
   let cursor = 0;
+  // push a plain stretch, dimming the parts of it outside the focus ranges
+  const pushPlain = (from: number, to: number, key: string) => {
+    if (from >= to) return;
+    if (!focusRanges.length) { nodes.push(text.slice(from, to)); return; }
+    let cur = from;
+    for (const r of focusRanges) {
+      const fs = Math.max(r.start, from), fe = Math.min(r.start + r.len, to);
+      if (fe <= from || r.start >= to) continue;
+      if (fs > cur) nodes.push(<span key={`${key}-d${cur}`} style={{ opacity: FOCUS_DIM }}>{text.slice(cur, fs)}</span>);
+      if (fe > fs) nodes.push(<React.Fragment key={`${key}-f${fs}`}>{text.slice(fs, fe)}</React.Fragment>);
+      cur = Math.max(cur, fe);
+    }
+    if (cur < to) nodes.push(<span key={`${key}-d${cur}`} style={{ opacity: FOCUS_DIM }}>{text.slice(cur, to)}</span>);
+  };
   matches.forEach((m, i) => {
-    if (m.start > cursor) nodes.push(text.slice(cursor, m.start));
+    pushPlain(cursor, m.start, `p${i}`);
     const a = anns.find((x) => x.id === m.annId)!;
     const pinned = opts.isPinned(a);
-    nodes.push(
+    const dim = !inFocus(m.start, focusRanges);
+    const hl = (
       <Highlight
         key={`${m.annId}-${i}`}
         category={a.category}
@@ -284,6 +333,7 @@ function renderHighlighted(
         {m.anchor}
       </Highlight>
     );
+    nodes.push(dim ? <span key={`hw${i}`} style={{ opacity: FOCUS_DIM }}>{hl}</span> : hl);
     // always-on interlinear italic micro-note beside EVERY annotated term,
     // so the 150% layer reads like a fully marked-up page (the card adds depth).
     if (a.gloss) {
@@ -294,6 +344,7 @@ function renderHighlighted(
             fontFamily: "var(--font-sans)", fontStyle: "italic", fontSize: "0.6em",
             color: "var(--text-muted)",
             margin: "0 0.2em", verticalAlign: "baseline", whiteSpace: "normal",
+            opacity: dim ? FOCUS_DIM : 1,
           }}
         >
           — {a.gloss}
@@ -302,7 +353,7 @@ function renderHighlighted(
     }
     cursor = m.start + m.len;
   });
-  if (cursor < text.length) nodes.push(text.slice(cursor));
+  pushPlain(cursor, text.length, "pt");
   return nodes;
 }
 
@@ -311,8 +362,8 @@ function truncate(s: string, n: number) {
 }
 
 function DepthLadder({ depth }: { depth: string }) {
-  const steps = ["5%", "150%", "Note", "100%"];
-  const labels: Record<string, string> = { "5%": "Simplified", "150%": "Assisted", "Note": "Annotation", "100%": "Original" };
+  const steps = ["Plain", "Assisted", "Note", "Original"];
+  const labels: Record<string, string> = { "Plain": "Plain-language summary", "Assisted": "Original + assist notes", "Note": "Annotation detail", "Original": "Clean original" };
   const idx = steps.indexOf(depth);
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>

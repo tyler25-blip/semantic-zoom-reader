@@ -42,6 +42,11 @@
       "heading": "The hardest call on the ward"
     },
     {
+      "id": "RW",
+      "eyebrow": "The landscape",
+      "heading": "What we already knew about AI in the clinic"
+    },
+    {
       "id": "C",
       "eyebrow": "The incumbent",
       "heading": "Five reasons nobody trusts the alarm"
@@ -83,6 +88,9 @@
       ],
       "tags": [
         "argument-role"
+      ],
+      "focus": [
+        "Today's AI systems for medical decision support often succeed on benchmark datasets in research papers"
       ]
     },
     {
@@ -94,6 +102,9 @@
       ],
       "tags": [
         "argument-role"
+      ],
+      "focus": [
+        "but fail in real-world deployment."
       ]
     },
     {
@@ -105,6 +116,9 @@
       ],
       "tags": [
         "argument-role"
+      ],
+      "focus": [
+        "The study begins with a formative study investigating why clinical experts abandon an existing AI-powered Sepsis predictive module"
       ]
     },
     {
@@ -118,6 +132,9 @@
       "tags": [
         "vocab",
         "clinical"
+      ],
+      "focus": [
+        "yet life-threatening organ dysfunction triggered by a dysregulated response to infection"
       ]
     },
     {
@@ -130,6 +147,10 @@
       ],
       "tags": [
         "background"
+      ],
+      "focus": [
+        "sepsis prediction and alerting module, Epic Sepsis Module (ESM)",
+        "All physicians complain that the current sepsis prediction is too late and thus useless"
       ]
     },
     {
@@ -142,6 +163,9 @@
       ],
       "tags": [
         "argument-role"
+      ],
+      "focus": [
+        "Such output at the final decision stage implicitly \"challenges\" human decision-makers' authority and expertise in their roles of making that final decision."
       ]
     },
     {
@@ -153,6 +177,9 @@
       ],
       "tags": [
         "argument-role"
+      ],
+      "focus": [
+        "Due to the current prediction focusing too much on the final stage of decision making only"
       ]
     },
     {
@@ -164,6 +191,9 @@
       ],
       "tags": [
         "argument-role"
+      ],
+      "focus": [
+        "Therefore, we build SepsisLab based on a state-of-the-art AI algorithm and extend it to predict the future projection of sepsis development, visualize the prediction uncertainty, and propose actionable suggestions"
       ]
     },
     {
@@ -176,6 +206,9 @@
       ],
       "tags": [
         "clinical"
+      ],
+      "focus": [
+        "The development of sepsis is very fast — without a timely diagnosis or proper treatment, a patient might die within a few hours"
       ]
     },
     {
@@ -188,6 +221,9 @@
       "tags": [
         "numbers",
         "clinical"
+      ],
+      "focus": [
+        "Sepsis is a common ( 48.9 million patients per year worldwide)"
       ]
     },
     {
@@ -201,6 +237,10 @@
       ],
       "tags": [
         "concept-density"
+      ],
+      "focus": [
+        "sepsis diagnosis is particularly challenging because",
+        "make a time-sensitive decision at the first encounter with the patients, despite they face huge uncertainty"
       ]
     },
     {
@@ -213,6 +253,9 @@
       "tags": [
         "concept-density",
         "clinical"
+      ],
+      "focus": [
+        "clinicians need to decide not only whether the patient has sepsis at that moment, but also how likely this patient may develop sepsis in the near future"
       ]
     },
     {
@@ -225,6 +268,9 @@
       "tags": [
         "clinical",
         "numbers"
+      ],
+      "focus": [
+        "the golden standard test for sepsis is the \"blood culture\" test in the Sepsis-3 guidelines. However, it takes at least 8 hours to obtain the result"
       ]
     },
     {
@@ -237,6 +283,55 @@
       ],
       "tags": [
         "argument-role"
+      ],
+      "focus": [
+        "Among the four stages of the medical decision-making workflow (1. Generating hypotheses, 2. Gathering data, 3. Testing hypotheses, 4. Making decisions)"
+      ]
+    },
+    {
+      "id": "sr1",
+      "section": "RW",
+      "break": true,
+      "text": "Before building anything, the team looked at what was already known about putting AI in the clinic.",
+      "source": [
+        "p_relwork_challenges"
+      ],
+      "focus": [
+        "numerous studies show such AI-CDSS can effectively assist doctors"
+      ],
+      "tags": [
+        "hci"
+      ]
+    },
+    {
+      "id": "sr2",
+      "section": "RW",
+      "text": "The pattern was familiar: these tools can help, but doctors stay wary — they carry the legal responsibility, the models are opaque, and bolting AI onto the records can even add work.",
+      "source": [
+        "p_relwork_challenges"
+      ],
+      "focus": [
+        "a significant hurdle is liability: because clinicians bear responsibility for medical decisions, they approach AI predictions with caution"
+      ],
+      "tags": [
+        "concept-density",
+        "hci"
+      ]
+    },
+    {
+      "id": "sr3",
+      "section": "RW",
+      "break": true,
+      "text": "And for sepsis in particular, earlier work warned the fix isn't fancier explanations — it's explanations that match how a doctor already thinks, so trust can form.",
+      "source": [
+        "p_relwork_design"
+      ],
+      "focus": [
+        "the most important challenge is not to use XAI methods to explain the model outcome, but to use methods consistent with the doctor's cognition"
+      ],
+      "tags": [
+        "ml",
+        "hci"
       ]
     },
     {
@@ -250,6 +345,9 @@
       "tags": [
         "ml",
         "clinical"
+      ],
+      "focus": [
+        "One notable effort is that a number of hospitals recently started to adopt a sepsis prediction and alerting module, Epic Sepsis Module (ESM)"
       ]
     },
     {
@@ -262,6 +360,9 @@
       "tags": [
         "ml",
         "stats"
+      ],
+      "focus": [
+        "take in a patient's EHR information and other biomarker data at that moment as input and predict a sepsis risk score as output. If the predicted risk score is higher than a threshold"
       ]
     },
     {
@@ -270,7 +371,24 @@
       "break": true,
       "text": "To find out why clinicians abandon it, the team ran a formative study — open-ended interviews with six doctors and nurses who live with the tool every day.",
       "source": [
-        "p_belated"
+        "p_method"
+      ],
+      "tags": [
+        "hci"
+      ],
+      "focus": [
+        "We recruited six clinicians who are domain experts whose daily work involves sepsis diagnosis and who have used the Epic Sepsis Module (ESM)."
+      ]
+    },
+    {
+      "id": "sm1",
+      "section": "C",
+      "text": "The six were ICU, ER, and internal-medicine staff who live with sepsis, recruited by word of mouth; each sat for a roughly 35-minute remote interview recalling a recent case.",
+      "source": [
+        "p_method"
+      ],
+      "focus": [
+        "all are active physicians or nurses in the Intensive Care Unit, Emergency Department, or Internal Medicine"
       ],
       "tags": [
         "hci"
@@ -285,6 +403,9 @@
       ],
       "tags": [
         "argument-role"
+      ],
+      "focus": [
+        "All physicians complain that the current sepsis prediction is too late and thus useless in their decision-making."
       ]
     },
     {
@@ -297,6 +418,9 @@
       ],
       "tags": [
         "clinical"
+      ],
+      "focus": [
+        "AI prediction must rely on data as input, but at first encounter, many of such data (e.g., vitals or lab results) do not exist or are not digitalized yet."
       ]
     },
     {
@@ -309,6 +433,10 @@
       "tags": [
         "numbers",
         "stats"
+      ],
+      "focus": [
+        "an extremely low sensitivity threshold at 13% (i.e., high false positive rate at 87%)",
+        "more than 20 interruptions per hour for an ER physician"
       ]
     },
     {
@@ -320,6 +448,9 @@
       ],
       "tags": [
         "ml"
+      ],
+      "focus": [
+        "Participants do not understand why an obvious sepsis case has a lower risk score than the score of a less obvious case."
       ]
     },
     {
@@ -331,6 +462,9 @@
       ],
       "tags": [
         "argument-role"
+      ],
+      "focus": [
+        "they simply ignored the risk score during their diagnosis process because they were confused about the purpose of the risk score and did not know what to do as an actionable next step"
       ]
     },
     {
@@ -344,6 +478,24 @@
       "tags": [
         "argument-role",
         "hci"
+      ],
+      "focus": [
+        "this human-AI interaction paradigm is essentially perceived as a human-AI competition, which challenges the human experts' expertise and intimidates their authorities"
+      ]
+    },
+    {
+      "id": "ssum",
+      "section": "C",
+      "break": true,
+      "text": "Pulled together, the five complaints point one way: doctors want help in the messy middle of the decision, not a verdict at the end.",
+      "source": [
+        "p_summary"
+      ],
+      "focus": [
+        "human experts need AI to focus more on supporting their intermediate decision-making process, rather than predicting a final outcome"
+      ],
+      "tags": [
+        "argument-role"
       ]
     },
     {
@@ -356,6 +508,9 @@
       ],
       "tags": [
         "argument-role"
+      ],
+      "focus": [
+        "The current AI-based sepsis prediction module mainly focuses on the prediction of the final decision outcomes, in our case, it is the sepsis risk score"
       ]
     },
     {
@@ -367,6 +522,9 @@
       ],
       "tags": [
         "argument-role"
+      ],
+      "focus": [
+        "Design Strategy 5: Shifting AI from Suggesting the Final Decision to Supporting Intermediate Stages."
       ]
     },
     {
@@ -379,6 +537,9 @@
       ],
       "tags": [
         "concept-density"
+      ],
+      "focus": [
+        "Design Strategy 1: Performing Future Risk Score Prediction. Design Strategy 2: Providing Accessible Model Explanation. Design Strategy 3: Revealing Actionable Insights and Suggestions. Design Strategy 4: Displaying Uncertainty beyond the Risk Score."
       ]
     },
     {
@@ -391,6 +552,9 @@
       ],
       "tags": [
         "argument-role"
+      ],
+      "focus": [
+        "one core part of SepsisLab is a predictive algorithm that generates future prediction of sepsis risk scores"
       ]
     },
     {
@@ -404,6 +568,9 @@
       "tags": [
         "ml",
         "clinical"
+      ],
+      "focus": [
+        "we design a time-series plot to visualize both the historical (the solid line) and expected future (the dashed line) risk prediction trajectory over time"
       ]
     },
     {
@@ -416,6 +583,9 @@
       "tags": [
         "stats",
         "ml"
+      ],
+      "focus": [
+        "the model also generates the uncertainty range of the expected value, as shown in the gray area in the line plot"
       ]
     },
     {
@@ -428,6 +598,9 @@
       "tags": [
         "clinical",
         "ml"
+      ],
+      "focus": [
+        "we added the lab tests recommendation function into our interface. SepsisLab recommends an item list ranked by their importance"
       ]
     },
     {
@@ -441,6 +614,9 @@
       "tags": [
         "ml",
         "vocab"
+      ],
+      "focus": [
+        "observe how their test results could influence the model's risk prediction trajectory (the red dashed line) and the corresponding uncertainty range (the red area). Note that the red line and area are counterfactual values"
       ]
     },
     {
@@ -454,6 +630,9 @@
       "tags": [
         "ml",
         "vocab"
+      ],
+      "focus": [
+        "we select Long Short-Term Memory (LSTM) as the backbone of the prediction framework, which is able to capture both long-term and short-term clinical information"
       ]
     },
     {
@@ -465,6 +644,9 @@
       ],
       "tags": [
         "ml"
+      ],
+      "focus": [
+        "The attention module can automatically focus on important variables, and the learned attention weights can be used to interpret the prediction results"
       ]
     },
     {
@@ -478,6 +660,9 @@
       "tags": [
         "ml",
         "stats"
+      ],
+      "focus": [
+        "we adopt Monte Carlo Simulation (MCS) to sample the missing values many times and compute the uncertainty with the standard deviation of the outputs"
       ]
     },
     {
@@ -490,6 +675,25 @@
       "tags": [
         "stats",
         "ml"
+      ],
+      "focus": [
+        "We define the uncertainty as Shannon entropy e = -p log(p) - (1-p) log(1-p). If the uncertainty e > th_e, the model will recommend clinicians to collect more clinical variables"
+      ]
+    },
+    {
+      "id": "scf",
+      "section": "F",
+      "break": true,
+      "text": "That what-if isn't a guess: the model computes a counterfactual — re-running the forecast as if the test had been done — so the doctor can weigh a test's payoff before paying its time and cost.",
+      "source": [
+        "p_counterfactual"
+      ],
+      "focus": [
+        "SepsisLab computes a counterfactual prediction: it estimates how the risk trajectory and its uncertainty would change if a recommended lab test were performed"
+      ],
+      "tags": [
+        "ml",
+        "concept-density"
       ]
     },
     {
@@ -503,6 +707,9 @@
       "tags": [
         "numbers",
         "stats"
+      ],
+      "focus": [
+        "our recommendation algorithm performs comparable to full observation setting models and outperforms the masked setting models by approximately 10% with only 9.6% extra laboratory values"
       ]
     },
     {
@@ -511,10 +718,28 @@
       "break": true,
       "text": "The real test was human: the same six clinicians took SepsisLab for a spin on de-identified cases, then talked it through.",
       "source": [
-        "p_eval"
+        "p_evalmethod"
       ],
       "tags": [
         "hci"
+      ],
+      "focus": [
+        "We recruited the same six clinical experts to perform a heuristic test with our system."
+      ]
+    },
+    {
+      "id": "sem",
+      "section": "G",
+      "text": "They worked through ten de-identified MIMIC-III cases — five who turned out septic, five not — with the prototype standing in as a design probe.",
+      "source": [
+        "p_evalmethod"
+      ],
+      "focus": [
+        "we selected two patient groups — one ultimately diagnosed with sepsis and one without — and randomly chose five data points from each, totaling ten cases"
+      ],
+      "tags": [
+        "hci",
+        "stats"
       ]
     },
     {
@@ -527,6 +752,10 @@
       "tags": [
         "hci",
         "argument-role"
+      ],
+      "focus": [
+        "the new system was able to improve the human-AI collaboration experience",
+        "ease feelings of being in competition with or replaced by AI"
       ]
     },
     {
@@ -535,10 +764,61 @@
       "break": true,
       "text": "They liked watching the risk unfold into the future (\"it says the whole picture\"), found the lab suggestions genuinely actionable for once, and said the what-if previews finally let them see the model's reasoning.",
       "source": [
-        "p_eval"
+        "p_eval_future",
+        "p_eval_labrec",
+        "p_eval_counterfactual"
       ],
       "tags": [
         "argument-role"
+      ],
+      "focus": [
+        "All six participants liked the time-based prediction capability of our system.",
+        "All six participants responded positively to the lab test recommendation.",
+        "Participants agreed that showing counterfactual predictions based on the recommendation would drive their choice of lab tests."
+      ]
+    },
+    {
+      "id": "sef1",
+      "section": "G",
+      "break": true,
+      "text": "All six liked seeing risk as a trajectory: the graph \"says the whole picture,\" showing not just now but where things head next.",
+      "source": [
+        "p_eval_future"
+      ],
+      "focus": [
+        "All six participants liked the time-based prediction capability of our system."
+      ],
+      "tags": [
+        "hci"
+      ]
+    },
+    {
+      "id": "sef2",
+      "section": "G",
+      "text": "All six found the lab-test suggestions genuinely actionable — they fit the existing workflow, and doctors said they'd actually order what the model asked for.",
+      "source": [
+        "p_eval_labrec"
+      ],
+      "focus": [
+        "All six participants responded positively to the lab test recommendation.",
+        "consistent with current physician workflows"
+      ],
+      "tags": [
+        "hci"
+      ]
+    },
+    {
+      "id": "sef3",
+      "section": "G",
+      "text": "And the what-if previews built trust: seeing how a test would move the prediction helped them narrow the search instead of leaning on gut alone.",
+      "source": [
+        "p_eval_counterfactual"
+      ],
+      "focus": [
+        "being able to see the potential outcomes of different lab tests would help their thinking process and narrow the search space"
+      ],
+      "tags": [
+        "hci"
       ]
     },
     {
@@ -550,6 +830,25 @@
       ],
       "tags": [
         "hci"
+      ],
+      "focus": [
+        "Instead, our system ensures that physicians retain the role of final decision-maker."
+      ]
+    },
+    {
+      "id": "sdis",
+      "section": "H",
+      "break": true,
+      "text": "Step back and the lesson is about where AI sits: chasing the most accurate final score is exactly what broke collaboration; the win came from helping the steps before the verdict.",
+      "source": [
+        "p_discussion"
+      ],
+      "focus": [
+        "we argue that AI should support human experts in the intermediate stages (Steps 1–3) rather than the final stage"
+      ],
+      "tags": [
+        "argument-role",
+        "concept-density"
       ]
     },
     {
@@ -562,6 +861,9 @@
       ],
       "tags": [
         "argument-role"
+      ],
+      "focus": [
+        "there are a number of decision-making tasks that have similar properties as sepsis diagnosis: highly uncertain, high-stakes, and time-sensitive"
       ]
     },
     {
@@ -573,6 +875,10 @@
       ],
       "tags": [
         "argument-role"
+      ],
+      "focus": [
+        "Examples include both physical health problems (e.g., stroke, heart attack, and meningitis), and mental health problems",
+        "non-healthcare complex decision-making scenarios as well, such as military"
       ]
     },
     {
@@ -585,6 +891,10 @@
       ],
       "tags": [
         "argument-role"
+      ],
+      "focus": [
+        "participants were concerned about the cognitive load caused by our system",
+        "mistakes and errors made by AI are inevitable"
       ]
     },
     {
@@ -596,6 +906,24 @@
       ],
       "tags": [
         "hci"
+      ],
+      "focus": [
+        "We only involved six physicians in our formative study and heuristic evaluation, who came from the same hospital and only used one specific sepsis module ESM"
+      ]
+    },
+    {
+      "id": "scon",
+      "section": "H",
+      "break": true,
+      "text": "The bottom line: in fast, high-stakes, uncertain calls, AI helps most as a partner in the middle of the work — and SepsisLab is one concrete way to build that.",
+      "source": [
+        "p_conclusion"
+      ],
+      "focus": [
+        "AI should not focus on predicting the final decision, which can intimidate human experts"
+      ],
+      "tags": [
+        "argument-role"
       ]
     }
   ],
@@ -704,6 +1032,61 @@
       "id": "p_limits",
       "label": "§6.4 Limitation and Future Work",
       "text": "There are several limitations in our work. First, our study population is limited. We only involved six physicians in our formative study and heuristic evaluation, who came from the same hospital and only used one specific sepsis module ESM. Second, our system is implemented as a prototype and not integrated into the EHR system. Our evaluation study used our system as a design probe to collect clinicians' feedback. We also find that physicians and nurses often have different responsibilities in the diagnostic decision-making process. Different workflows that arise from different clinical roles are often overlooked in contemporary AI-CDSS designs."
+    },
+    {
+      "id": "p_relwork_challenges",
+      "label": "§2.2 Challenges of AI-empowered Clinical Decision Support",
+      "text": "With AI's advancement, many algorithms have been crafted to bolster clinical decision making, aiming to improve patient outcomes and reduce clinician workload, and numerous studies show such AI-CDSS can effectively assist doctors. However, a significant hurdle is liability: because clinicians bear responsibility for medical decisions, they approach AI predictions with caution, and the opaque nature of AI makes it hard for doctors to fully embrace its direct diagnostic and treatment suggestions. Recent research even suggests that embedding AI into EHR systems might inadvertently increase physician workload, and a disconnection exists between what clinicians expect from AI and what AI actually delivers."
+    },
+    {
+      "id": "p_relwork_design",
+      "label": "§2.3 AI-supported Clinical Decision Support Systems Design",
+      "text": "There has been growing research on designing AI-CDSS systems. Typically, AI-CDSS offers decision support by delivering predictions, risk evaluations, or suggestions, and some systems offer supplementary evidence or explanations to help doctors understand AI output and calibrate trust — referencing literature, comparing with prior data, or bridging knowledge gaps. Prior research suggests that in sepsis diagnosis, the most important challenge is not to use XAI methods to explain the model outcome, but to use methods consistent with the doctor's cognition to establish trust between the doctor and the model. However, many current explainable-AI methods cannot meet this goal for sepsis-related AI-CDSS."
+    },
+    {
+      "id": "p_method",
+      "label": "§3.1 Formative Study — Method",
+      "text": "We recruited six clinicians who are domain experts whose daily work involves sepsis diagnosis and who have used the Epic Sepsis Module (ESM). We used snowball sampling to recruit them; all are active physicians or nurses in the Intensive Care Unit, Emergency Department, or Internal Medicine, where clinicians most likely encounter sepsis patients. All interview sessions were conducted remotely via Zoom and lasted, on average, 35 minutes, and the study was pre-approved by the IRB. During the interviews, participants were asked to recall a recent sepsis case and detail how the diagnosis decision was made."
+    },
+    {
+      "id": "p_summary",
+      "label": "§3.3 Summary of Results",
+      "text": "In summary, our formative study shows that the existing AI-driven sepsis risk prediction module does not support clinicians in their decision-making, because the current algorithm is belated and inaccurate, the interface lacks explanations, and the prediction cannot be transformed into a diagnostic or treatment action. These challenges reveal a fundamental issue of the existing human-AI decision-making paradigm: human experts need AI to focus more on supporting their intermediate decision-making process, rather than predicting a final outcome."
+    },
+    {
+      "id": "p_counterfactual",
+      "label": "§4.3.3 Counterfactual Prediction",
+      "text": "From AI's perspective, it would love clinicians to perform all kinds of lab tests so it can reduce most of its uncertainty and predict more accurately; but from the human's perspective, that is too costly and inhumane. While the lab-test recommendation can identify the most informative missing test, it is still hard for doctors to intuitively see the value of these lab tests. Therefore, SepsisLab computes a counterfactual prediction: it estimates how the risk trajectory and its uncertainty would change if a recommended lab test were performed — letting clinicians weigh the benefit before paying the time and cost of ordering it."
+    },
+    {
+      "id": "p_evalmethod",
+      "label": "§5.1 Evaluation — Design and Procedure",
+      "text": "We recruited the same six clinical experts to perform a heuristic test with our system. We first pre-loaded de-identified patient data from MIMIC-III into our prototype and deployed it on an internal cloud cluster to prevent leakage of patient data. To demonstrate the system across varied conditions, we selected two patient groups — one ultimately diagnosed with sepsis and one without — and randomly chose five data points from each, totaling ten cases for participants to view and interact with. Our SepsisLab system was used as a design probe to solicit participants' user experience and feedback."
+    },
+    {
+      "id": "p_eval_future",
+      "label": "§5.2.2 Future Prediction & Visualization Reveals More",
+      "text": "All six participants liked the time-based prediction capability of our system. The prediction graph, with its uncertainty visualization, went beyond the final decision stage and provided much richer information than a single risk score — \"I love that graph because it says the whole picture\" (P1). Participants felt this could help them understand the model better, inspect whether it is reliable, and see not only where the patient is now but where the risk is heading hours from now."
+    },
+    {
+      "id": "p_eval_labrec",
+      "label": "§5.2.3 Lab Test Recommendation Provides Actionable Insights",
+      "text": "All six participants responded positively to the lab test recommendation. They confirmed that the recommendations were consistent with current physician workflows, which validates the design, and said they would take advantage of the function to consider and act on lab tests. As P6 put it, knowing which lab results would help the AI make a better prediction would make them give it a try — and those results might also be more useful in their own decision."
+    },
+    {
+      "id": "p_eval_counterfactual",
+      "label": "§5.2.4 Counterfactual Information Improves Transparency",
+      "text": "Participants agreed that showing counterfactual predictions based on the recommendation would drive their choice of lab tests. Traditionally they relied on personal experience, yet sepsis is hard to diagnose due to its inherent uncertainty; being able to see the potential outcomes of different lab tests would help their thinking process and narrow the search space — for example, prompting them to repeat a lactate or a white-blood-count when the patient is scoring high."
+    },
+    {
+      "id": "p_discussion",
+      "label": "§6.1 Human-AI Collaboration in High-Stakes, Time-Sensitive Decisions",
+      "text": "With sepsis as an example, our work reveals a fundamental problem in the existing human-AI collaboration paradigm for high-uncertainty, high-stakes, and time-sensitive decisions. Most AI research in this space aims to create the most accurate risk-score prediction model, but this goal fails to form effective human-AI collaboration: physicians found such a model unhelpful and intimidating, challenging their role as the final decision-maker. Instead, we argue that AI should support human experts in the intermediate stages (Steps 1–3) rather than the final stage, positioning AI to support the decision process without displacing the expert's role."
+    },
+    {
+      "id": "p_conclusion",
+      "label": "§7 Conclusion",
+      "text": "In this work, we aim to design a better human-AI collaboration paradigm to support human experts in high-uncertainty, high-stakes, and time-sensitive decision-making tasks, focusing on sepsis diagnosis. Through a formative study with six physicians, we found the existing module not only useless but a source of extra meaningless workload, revealing a fundamental problem: AI should not focus on predicting the final decision, which can intimidate human experts. Based on these insights we built SepsisLab, which shifts the AI's focus from the final stage to the intermediate stages, and our evaluation suggests it enables a more promising human-AI collaboration for sepsis and other high-stakes medical decisions."
     }
   ],
   "augment": {
@@ -1671,49 +2054,22 @@
     "s17": {
       "annotations": [
         {
-          "id": "n98",
-          "anchor": "too late and thus useless",
-          "domain": "argument-role",
+          "id": "n220",
+          "anchor": "domain experts",
+          "domain": "hci",
+          "category": "vocab",
+          "display": "inline",
+          "content": "Not a random sample — clinicians who actually diagnose sepsis and have used the incumbent tool, so the critique is informed.",
+          "gloss": "people who live with the problem"
+        },
+        {
+          "id": "n221",
+          "anchor": "Epic Sepsis Module (ESM)",
+          "domain": "clinical",
           "category": "argument-role",
           "display": "inline",
-          "content": "If the alert fires after you've already acted, it adds nothing.",
-          "gloss": "the #1 complaint"
-        },
-        {
-          "id": "n99",
-          "anchor": "time-sensitive decision",
-          "domain": "clinical",
-          "category": "concept-density",
-          "display": "inline",
-          "content": "The window is hours, so you can't wait for the data the AI needs.",
-          "gloss": "must decide fast, now"
-        },
-        {
-          "id": "n100",
-          "anchor": "first encounter",
-          "domain": "clinical",
-          "category": "background",
-          "display": "inline",
-          "content": "Exactly when the chart is emptiest — and when the model has least to work with.",
-          "gloss": "the moment of arrival"
-        },
-        {
-          "id": "n101",
-          "anchor": "huge uncertainty",
-          "domain": "stats",
-          "category": "concept-density",
-          "display": "inline",
-          "content": "deciding with little evidence",
-          "gloss": "deciding with little evidence"
-        },
-        {
-          "id": "n102",
-          "anchor": "not digitalized yet",
-          "domain": "clinical",
-          "category": "background",
-          "display": "inline",
-          "content": "Early on, vitals and labs may be on paper or not taken — so the AI is flying blind.",
-          "gloss": "data exists but isn't typed in"
+          "content": "The widely-used incumbent alert whose failures the study sets out to explain.",
+          "gloss": "the tool under study"
         }
       ]
     },
@@ -2610,31 +2966,22 @@
     "s37": {
       "annotations": [
         {
-          "id": "n192",
-          "anchor": "evaluation study",
+          "id": "n222",
+          "anchor": "heuristic test",
           "domain": "hci",
           "category": "vocab",
           "display": "inline",
-          "content": "The same six clinicians tried the prototype and were interviewed about it.",
-          "gloss": "the real-user test"
+          "content": "A hands-on usability check with experts, used to surface reactions and needs — not a formal controlled trial.",
+          "gloss": "experts try it, you listen"
         },
         {
-          "id": "n193",
-          "anchor": "ease feelings of being in competition",
-          "domain": "hci",
-          "category": "argument-role",
+          "id": "n223",
+          "anchor": "de-identified patient data from MIMIC-III",
+          "domain": "stats",
+          "category": "vocab",
           "display": "inline",
-          "content": "The key win: moving the AI off the verdict made it feel like a teammate.",
-          "gloss": "felt less like a rival"
-        },
-        {
-          "id": "n194",
-          "anchor": "retain the role of final decision-maker",
-          "domain": "argument-role",
-          "category": "concept-density",
-          "display": "inline",
-          "content": "By design the AI suggests; the clinician chooses — which is exactly what restored trust.",
-          "gloss": "the human still decides"
+          "content": "Real ICU records with identities stripped — lets you test on genuine cases without risking privacy.",
+          "gloss": "real cases, anonymised"
         }
       ]
     },
@@ -2672,31 +3019,31 @@
     "s39": {
       "annotations": [
         {
-          "id": "n198",
-          "anchor": "evaluation study",
-          "domain": "hci",
+          "id": "n224",
+          "anchor": "time-based prediction capability",
+          "domain": "ml",
           "category": "vocab",
           "display": "inline",
-          "content": "The same six clinicians tried the prototype and were interviewed about it.",
-          "gloss": "the real-user test"
+          "content": "Risk shown as a curve over time rather than one number — the feature clinicians liked most.",
+          "gloss": "where risk is heading"
         },
         {
-          "id": "n199",
-          "anchor": "ease feelings of being in competition",
-          "domain": "hci",
+          "id": "n225",
+          "anchor": "lab test recommendation",
+          "domain": "clinical",
           "category": "argument-role",
           "display": "inline",
-          "content": "The key win: moving the AI off the verdict made it feel like a teammate.",
-          "gloss": "felt less like a rival"
+          "content": "Concrete next actions — which test to order — which is what made the tool feel useful, not just informative.",
+          "gloss": "what to do next"
         },
         {
-          "id": "n200",
-          "anchor": "retain the role of final decision-maker",
-          "domain": "argument-role",
+          "id": "n226",
+          "anchor": "counterfactual predictions",
+          "domain": "ml",
           "category": "concept-density",
           "display": "inline",
-          "content": "By design the AI suggests; the clinician chooses — which is exactly what restored trust.",
-          "gloss": "the human still decides"
+          "content": "Previews of how a test would move the forecast, which let clinicians see the model's reasoning and build trust.",
+          "gloss": "what-if previews"
         }
       ]
     },
@@ -2888,6 +3235,207 @@
           "display": "inline",
           "content": "A parting insight: one-size-fits-all interfaces overlook distinct clinical roles.",
           "gloss": "nurses vs doctors need different tools"
+        }
+      ]
+    },
+    "sr2": {
+      "annotations": [
+        {
+          "id": "n227",
+          "anchor": "liability",
+          "domain": "hci",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "Because the doctor is legally on the hook for the outcome, they can't just defer to a model — so trust must be earned.",
+          "gloss": "who's responsible if it's wrong"
+        },
+        {
+          "id": "n228",
+          "anchor": "opaque",
+          "domain": "ml",
+          "category": "vocab",
+          "display": "inline",
+          "content": "You can't see why the model said what it said — which makes a cautious clinician reluctant to follow it.",
+          "gloss": "a black box"
+        }
+      ]
+    },
+    "sr3": {
+      "annotations": [
+        {
+          "id": "n229",
+          "anchor": "XAI methods",
+          "domain": "ml",
+          "category": "vocab",
+          "display": "inline",
+          "content": "Explainable-AI: techniques meant to show why a model predicted something. The point here: technical explanations aren't enough.",
+          "gloss": "tools to explain a model"
+        },
+        {
+          "id": "n230",
+          "anchor": "consistent with the doctor's cognition",
+          "domain": "hci",
+          "category": "argument-role",
+          "display": "inline",
+          "content": "An explanation only builds trust if it lines up with how the clinician already reasons — not just a feature-importance chart.",
+          "gloss": "match how a doctor thinks"
+        }
+      ]
+    },
+    "sm1": {
+      "annotations": [
+        {
+          "id": "n231",
+          "anchor": "snowball sampling",
+          "domain": "hci",
+          "category": "vocab",
+          "display": "inline",
+          "content": "Recruit a few fitting people, then ask them to refer others like them — common for hard-to-reach experts.",
+          "gloss": "referrals beget referrals"
+        },
+        {
+          "id": "n232",
+          "anchor": "IRB",
+          "domain": "hci",
+          "category": "vocab",
+          "display": "panel",
+          "content": "Institutional Review Board — the ethics committee that must approve studies involving people.",
+          "gloss": "the ethics sign-off"
+        }
+      ]
+    },
+    "scf": {
+      "annotations": [
+        {
+          "id": "n233",
+          "anchor": "counterfactual prediction",
+          "domain": "ml",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "A 'what if' estimate: the model re-forecasts as though a test had been run, so you see the payoff before ordering it.",
+          "gloss": "what would happen if…"
+        },
+        {
+          "id": "n234",
+          "anchor": "too costly and inhumane",
+          "domain": "clinical",
+          "category": "argument-role",
+          "display": "inline",
+          "content": "You can't run every lab on a patient — so the system has to justify which one is worth it.",
+          "gloss": "can't test everything"
+        }
+      ]
+    },
+    "sem": {
+      "annotations": [
+        {
+          "id": "n235",
+          "anchor": "MIMIC-III",
+          "domain": "stats",
+          "category": "vocab",
+          "display": "inline",
+          "content": "A large, de-identified public database of real ICU records — widely used to test clinical models.",
+          "gloss": "public ICU dataset"
+        },
+        {
+          "id": "n236",
+          "anchor": "design probe",
+          "domain": "hci",
+          "category": "vocab",
+          "display": "inline",
+          "content": "Use the prototype as a prompt to draw out reactions and needs, rather than as a finished product under formal test.",
+          "gloss": "a tool to spark feedback"
+        }
+      ]
+    },
+    "sef1": {
+      "annotations": [
+        {
+          "id": "n237",
+          "anchor": "time-based prediction",
+          "domain": "ml",
+          "category": "vocab",
+          "display": "inline",
+          "content": "Showing risk over time as a curve, not one number — the feature clinicians responded to most.",
+          "gloss": "where risk is heading"
+        }
+      ]
+    },
+    "sdis": {
+      "annotations": [
+        {
+          "id": "n238",
+          "anchor": "intermediate stages",
+          "domain": "argument-role",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "Steps 1–3 — hunch, gather, test — versus step 4, the final call. The paper's central claim about where AI belongs.",
+          "gloss": "the middle, not the end"
+        }
+      ]
+    },
+    "sr1": {
+      "annotations": [
+        {
+          "id": "n239",
+          "anchor": "AI-CDSS",
+          "domain": "ml",
+          "category": "vocab",
+          "display": "inline",
+          "content": "AI-supported Clinical Decision Support System — software that helps doctors decide, the broad category this work sits in.",
+          "gloss": "AI that helps doctors decide"
+        }
+      ]
+    },
+    "ssum": {
+      "annotations": [
+        {
+          "id": "n240",
+          "anchor": "intermediate decision-making process",
+          "domain": "argument-role",
+          "category": "argument-role",
+          "display": "inline",
+          "content": "The steps before the verdict — where the formative study says help is actually wanted.",
+          "gloss": "the middle of the work"
+        }
+      ]
+    },
+    "sef2": {
+      "annotations": [
+        {
+          "id": "n241",
+          "anchor": "consistent with current physician workflows",
+          "domain": "hci",
+          "category": "argument-role",
+          "display": "inline",
+          "content": "It fit how doctors already order labs — so it felt usable, not an extra chore.",
+          "gloss": "matches how they already work"
+        }
+      ]
+    },
+    "sef3": {
+      "annotations": [
+        {
+          "id": "n242",
+          "anchor": "narrow the search space",
+          "domain": "clinical",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "See which test would move the prediction, so you rule options in or out faster.",
+          "gloss": "fewer guesses"
+        }
+      ]
+    },
+    "scon": {
+      "annotations": [
+        {
+          "id": "n243",
+          "anchor": "intermediate stages",
+          "domain": "argument-role",
+          "category": "concept-density",
+          "display": "inline",
+          "content": "The recurring thesis: put AI in the steps before the decision, not on the decision itself.",
+          "gloss": "help the middle"
         }
       ]
     }

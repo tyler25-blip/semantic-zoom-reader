@@ -6,7 +6,8 @@ import { categoryStyle } from "../annotationStyle";
 /**
  * Highlight — marks an explainable span in the original (serif) text.
  * Type is colour-coded: one muted hue + underline style per annotation category,
- * so the reader can see at a glance what's annotatable and which kind.
+ * so the reader can see at a glance what's annotatable and which kind. The mark
+ * sits under the text (no overlay), so it never obscures the words.
  */
 export function Highlight({
   children,

@@ -51,7 +51,7 @@ export function MagazineReader({
       <header className="mag-span" style={{ textAlign: "center", marginBottom: "var(--space-8)", paddingBottom: "var(--space-5)", borderBottom: "2px solid var(--text)" }}>
         <div style={{ display: "flex", gap: 8, justifyContent: "center", marginBottom: 14, flexWrap: "wrap" }}>
           {paper.meta.badges.map((b, i) => <Badge key={b} tone={i === 0 ? "soft" : "default"}>{b}</Badge>)}
-          <Badge tone="soft">5% · Magazine</Badge>
+          <Badge tone="soft">Plain · Magazine</Badge>
         </div>
         <h1 className="serif" style={{ fontSize: "var(--text-display)", lineHeight: "var(--leading-tight)", letterSpacing: "var(--tracking-tight)", margin: "0 auto", maxWidth: "20ch", fontWeight: 600 }}>
           {paper.meta.title}

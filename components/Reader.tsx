@@ -169,7 +169,7 @@ export function Reader({
         <div style={{ padding: "28px 24px 16px", borderBottom: "1px solid var(--border)", maxWidth: 760, width: "100%", margin: "0 auto", boxSizing: "border-box" }}>
           <div style={{ display: "flex", gap: 8, marginBottom: 12, flexWrap: "wrap" }}>
             {paper.meta.badges.map((b, i) => <Badge key={b} tone={i === 0 ? "soft" : "default"}>{b}</Badge>)}
-            <Badge tone="soft">5% · Simplified</Badge>
+            <Badge tone="soft">Plain · Simplified</Badge>
           </div>
           <h1 className="serif" style={{ fontSize: "var(--text-h1)", fontWeight: 600, lineHeight: "var(--leading-snug)", margin: 0 }}>
             {paper.meta.title}
