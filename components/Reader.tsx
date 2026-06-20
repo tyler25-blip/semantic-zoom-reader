@@ -8,6 +8,8 @@ import { SkeletonReader } from "./SkeletonReader";
 import { MagazineReader } from "./MagazineReader";
 import { ZoomLayer } from "./ZoomLayer";
 import { OriginalMode } from "./OriginalMode";
+import { SectionMap } from "./SectionMap";
+import { OUTLINES, type OutlineNode } from "@/lib/outline";
 
 type Layout = "column" | "magazine";
 
@@ -35,6 +37,9 @@ export function Reader({
   const [originRect, setOriginRect] = React.useState<DOMRect | null>(null);
   const [flashSegment, setFlashSegment] = React.useState<string | null>(null);
   const [focusedAnn, setFocusedAnn] = React.useState<string | null>(null);
+  const [zoomSection, setZoomSection] = React.useState<string | null>(null); // section heading → structure map
+  const [markFocus, setMarkFocus] = React.useState(false); // mark the segment's sentences (when opened from a node)
+  const [hoveredSection, setHoveredSection] = React.useState<string | null>(null);
 
   // refs mirror state for the global pinch listener
   const zoomRef = React.useRef<string | null>(null);
@@ -42,16 +47,31 @@ export function Reader({
   const hoveredRef = React.useRef<string | null>(null);
   const flashTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
   const focusedAnnRef = React.useRef<string | null>(null);
+  const hoveredSectionRef = React.useRef<string | null>(null);
+  const sectionRef = React.useRef<string | null>(null);
+  const hoveredNodeRef = React.useRef<OutlineNode | null>(null);
   zoomRef.current = zoomSegment;
   levelRef.current = zoomLevel;
   hoveredRef.current = hovered;
   focusedAnnRef.current = focusedAnn;
+  hoveredSectionRef.current = hoveredSection;
+  sectionRef.current = zoomSection;
 
-  const openSegment = (id: string, rect?: DOMRect) => {
+  const openSegment = (id: string, rect?: DOMRect, mark = false) => {
     if (rect) setOriginRect(rect);
     setFlashSegment(null);
+    setMarkFocus(mark);
     setZoomSegment(id);
     setZoomLevel("augmented"); // zoom-in lands on the 150% assist layer first
+  };
+
+  // Section heading → structure map; clicking a node drills into its original text.
+  const openSection = (id: string) => { if (OUTLINES[id]) setZoomSection(id); };
+  const closeSection = () => setZoomSection(null);
+  // Keep the section map mounted underneath, so zooming out of the node returns
+  // to the map (not all the way back to the magazine).
+  const zoomNode = (node: OutlineNode) => {
+    openSegment(node.segments[0], undefined, true);
   };
   const closeZoom = () => {
     const from = zoomRef.current;
@@ -101,8 +121,15 @@ export function Reader({
       if (zoomRef.current) {
         deeper ? zoomIn() : zoomOut();
         lastPinch.current = now;
-      } else if (deeper && hoveredRef.current && !fullOriginal) {
-        openSegment(hoveredRef.current);
+      } else if (sectionRef.current) {
+        // inside the structure map: pinch-in on a hovered node drills in; pinch-out closes
+        if (deeper) { if (hoveredNodeRef.current) zoomNode(hoveredNodeRef.current); }
+        else closeSection();
+        lastPinch.current = now;
+      } else if (deeper && !fullOriginal) {
+        // prefer a hovered section heading; else a hovered sentence
+        if (hoveredSectionRef.current) openSection(hoveredSectionRef.current);
+        else if (hoveredRef.current) openSegment(hoveredRef.current);
         lastPinch.current = now;
       }
     };
@@ -183,12 +210,24 @@ export function Reader({
       {fullOriginal ? (
         <OriginalMode paper={paper} />
       ) : layout === "magazine" ? (
-        <MagazineReader paper={paper} unfamiliar={unfamiliar} onOpenSegment={openSegment} onHoverSegment={setHovered} activeSegment={zoomSegment} flashSegment={flashSegment} />
+        <MagazineReader paper={paper} unfamiliar={unfamiliar} onOpenSegment={openSegment} onHoverSegment={setHovered} activeSegment={zoomSegment} flashSegment={flashSegment} onOpenSection={openSection} onHoverSection={setHoveredSection} hasOutline={(id) => !!OUTLINES[id]} />
       ) : (
         <SkeletonReader paper={paper} unfamiliar={unfamiliar} onOpenSegment={openSegment} onHoverSegment={setHovered} activeSegment={zoomSegment} flashSegment={flashSegment} />
       )}
 
       <AnimatePresence>
+        {zoomSection && OUTLINES[zoomSection] && (
+          <SectionMap
+            key="sectionmap"
+            paper={paper}
+            outline={OUTLINES[zoomSection]}
+            section={paper.sections.find((s) => s.id === zoomSection)!}
+            onZoomNode={zoomNode}
+            onHoverNode={(n) => { hoveredNodeRef.current = n; }}
+            onClose={closeSection}
+            paused={!!zoomSegment}
+          />
+        )}
         {zoomSegment && (
           <ZoomLayer
             key="zoom"
@@ -199,6 +238,7 @@ export function Reader({
             originRect={originRect}
             focusedAnn={focusedAnn}
             onFocusAnn={setFocusedAnn}
+            markFocus={markFocus}
             onZoomIn={zoomIn}
             onZoomOut={zoomOut}
             onClose={closeZoom}

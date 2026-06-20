@@ -12,7 +12,10 @@ import type { ZoomLevel } from "./Reader";
 interface Match { annId: string; anchor: string; start: number; len: number; }
 interface Range { start: number; len: number; }
 
-const FOCUS_DIM = 1; // no dimming — the whole original reads at full ink; the highlighter marks carry the emphasis
+// Non-focus context is normally full ink (1). When a node is zoomed in from the
+// section map we pass a lower value so the node's own sentence(s) stand out.
+const NO_DIM = 1;
+const NODE_DIM = 0.38;
 
 // Where in a paragraph the current skeleton sentence's focus quote(s) land.
 function matchFocus(text: string, focus?: string[]): Range[] {
@@ -28,17 +31,17 @@ function matchFocus(text: string, focus?: string[]): Range[] {
 const inFocus = (pos: number, ranges: Range[]) =>
   ranges.length === 0 || ranges.some((r) => pos >= r.start && pos < r.start + r.len);
 
-// Clean original (no notes): full-strength focus, dimmed context around it.
-function renderFocusPlain(text: string, ranges: Range[]): React.ReactNode {
-  if (!ranges.length) return text;
+// Clean original (no notes): full-strength focus, context dimmed by `dim`.
+function renderFocusPlain(text: string, ranges: Range[], dim = NO_DIM): React.ReactNode {
+  if (!ranges.length || dim === NO_DIM) return text;
   const nodes: React.ReactNode[] = [];
   let cursor = 0;
   for (const r of ranges) {
-    if (r.start > cursor) nodes.push(<span key={`d${cursor}`} style={{ opacity: FOCUS_DIM }}>{text.slice(cursor, r.start)}</span>);
+    if (r.start > cursor) nodes.push(<span key={`d${cursor}`} style={{ opacity: dim }}>{text.slice(cursor, r.start)}</span>);
     nodes.push(text.slice(r.start, r.start + r.len));
     cursor = r.start + r.len;
   }
-  if (cursor < text.length) nodes.push(<span key={`d${cursor}`} style={{ opacity: FOCUS_DIM }}>{text.slice(cursor)}</span>);
+  if (cursor < text.length) nodes.push(<span key={`d${cursor}`} style={{ opacity: dim }}>{text.slice(cursor)}</span>);
   return nodes;
 }
 
@@ -69,6 +72,7 @@ export function ZoomLayer({
   originRect,
   focusedAnn,
   onFocusAnn,
+  markFocus = false,
   onZoomIn,
   onZoomOut,
   onClose,
@@ -80,6 +84,7 @@ export function ZoomLayer({
   originRect: DOMRect | null;
   focusedAnn: string | null;
   onFocusAnn: (id: string | null) => void;
+  markFocus?: boolean; // dim the surrounding context to mark this sentence (node zoom)
   onZoomIn: () => void;
   onZoomOut: () => void;
   onClose: () => void;
@@ -104,8 +109,10 @@ export function ZoomLayer({
 
   const used = new Set<string>();
   const paraMatches = sources.map((p) => matchAnchors(p.text, anns, used));
-  // which slice of each paragraph THIS skeleton sentence distils (dim the rest)
+  // which slice of each paragraph THIS skeleton sentence distils
   const paraFocus = sources.map((p) => matchFocus(p.text, segment.focus));
+  // when opened from a section-map node, dim the context so this sentence stands out
+  const dimOpacity = markFocus ? NODE_DIM : NO_DIM;
 
   const positionCard = (annId: string) => {
     const el = anchorRefs.current[annId];
@@ -245,8 +252,8 @@ export function ZoomLayer({
                             openAnn, unfamiliar, isPinned, openCard,
                             refFn: (id, el) => (anchorRefs.current[id] = el),
                             domains: paper.domains,
-                          }, paraFocus[pi])
-                        : renderFocusPlain(p.text, paraFocus[pi])}
+                          }, paraFocus[pi], dimOpacity)
+                        : renderFocusPlain(p.text, paraFocus[pi], dimOpacity)}
                     </p>
                   ))}
                 </div>
@@ -296,30 +303,32 @@ function renderHighlighted(
     refFn: (id: string, el: HTMLElement | null) => void;
     domains: Paper["domains"];
   },
-  focusRanges: Range[] = []
+  focusRanges: Range[] = [],
+  dim: number = NO_DIM
 ): React.ReactNode {
-  if (!matches.length) return renderFocusPlain(text, focusRanges);
+  if (!matches.length) return renderFocusPlain(text, focusRanges, dim);
   const nodes: React.ReactNode[] = [];
   let cursor = 0;
+  const noDim = dim === NO_DIM || !focusRanges.length;
   // push a plain stretch, dimming the parts of it outside the focus ranges
   const pushPlain = (from: number, to: number, key: string) => {
     if (from >= to) return;
-    if (!focusRanges.length) { nodes.push(text.slice(from, to)); return; }
+    if (noDim) { nodes.push(text.slice(from, to)); return; }
     let cur = from;
     for (const r of focusRanges) {
       const fs = Math.max(r.start, from), fe = Math.min(r.start + r.len, to);
       if (fe <= from || r.start >= to) continue;
-      if (fs > cur) nodes.push(<span key={`${key}-d${cur}`} style={{ opacity: FOCUS_DIM }}>{text.slice(cur, fs)}</span>);
+      if (fs > cur) nodes.push(<span key={`${key}-d${cur}`} style={{ opacity: dim }}>{text.slice(cur, fs)}</span>);
       if (fe > fs) nodes.push(<React.Fragment key={`${key}-f${fs}`}>{text.slice(fs, fe)}</React.Fragment>);
       cur = Math.max(cur, fe);
     }
-    if (cur < to) nodes.push(<span key={`${key}-d${cur}`} style={{ opacity: FOCUS_DIM }}>{text.slice(cur, to)}</span>);
+    if (cur < to) nodes.push(<span key={`${key}-d${cur}`} style={{ opacity: dim }}>{text.slice(cur, to)}</span>);
   };
   matches.forEach((m, i) => {
     pushPlain(cursor, m.start, `p${i}`);
     const a = anns.find((x) => x.id === m.annId)!;
     const pinned = opts.isPinned(a);
-    const dim = !inFocus(m.start, focusRanges);
+    const offFocus = !noDim && !inFocus(m.start, focusRanges);
     const hl = (
       <Highlight
         key={`${m.annId}-${i}`}
@@ -333,7 +342,7 @@ function renderHighlighted(
         {m.anchor}
       </Highlight>
     );
-    nodes.push(dim ? <span key={`hw${i}`} style={{ opacity: FOCUS_DIM }}>{hl}</span> : hl);
+    nodes.push(offFocus ? <span key={`hw${i}`} style={{ opacity: dim }}>{hl}</span> : hl);
     // always-on interlinear italic micro-note beside EVERY annotated term,
     // so the 150% layer reads like a fully marked-up page (the card adds depth).
     if (a.gloss) {
@@ -344,7 +353,7 @@ function renderHighlighted(
             fontFamily: "var(--font-sans)", fontStyle: "italic", fontSize: "0.6em",
             color: "var(--text-muted)",
             margin: "0 0.2em", verticalAlign: "baseline", whiteSpace: "normal",
-            opacity: dim ? FOCUS_DIM : 1,
+            opacity: offFocus ? dim : 1,
           }}
         >
           — {a.gloss}

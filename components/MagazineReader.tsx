@@ -3,6 +3,7 @@ import React from "react";
 import type { Paper, Segment, DomainId } from "@/lib/types";
 import { SegmentSpan } from "./SegmentSpan";
 import { Badge } from "./ds/Badge";
+import { Icon } from "./ds/Icons";
 import { FIGURES } from "@/lib/figures";
 
 /**
@@ -22,6 +23,9 @@ export function MagazineReader({
   onHoverSegment,
   activeSegment,
   flashSegment,
+  onOpenSection,
+  onHoverSection,
+  hasOutline,
 }: {
   paper: Paper;
   unfamiliar: Set<DomainId>;
@@ -29,7 +33,11 @@ export function MagazineReader({
   onHoverSegment: (id: string | null) => void;
   activeSegment: string | null;
   flashSegment: string | null;
+  onOpenSection?: (id: string) => void;
+  onHoverSection?: (id: string | null) => void;
+  hasOutline?: (id: string) => boolean;
 }) {
+  const [hoverHead, setHoverHead] = React.useState<string | null>(null);
   // group segments into [section -> paragraphs(segment[])]
   const blocks: { sectionId: string; paragraphs: Segment[][] }[] = [];
   for (const seg of paper.skeleton) {
@@ -42,7 +50,6 @@ export function MagazineReader({
     else block.paragraphs[block.paragraphs.length - 1].push(seg);
   }
 
-  const figuresAfter = (sid: string) => FIGURES.filter((f) => f.after === sid);
   let firstParaDone = false;
 
   return (
@@ -70,16 +77,57 @@ export function MagazineReader({
             <section key={sectionId} style={{ marginBottom: "var(--space-6)" }}>
               <div style={{ marginTop: "var(--space-5)", marginBottom: "var(--space-4)" }}>
                 <div className="eyebrow" style={{ color: "var(--accent)", marginBottom: 4 }}>{section.eyebrow}</div>
-                <h2 style={{ fontSize: "var(--text-h2)", lineHeight: "var(--leading-snug)", margin: 0, fontWeight: "var(--weight-semibold)" }}>
-                  {section.heading}
-                </h2>
+                {hasOutline?.(sectionId) ? (
+                  <button
+                    onClick={() => onOpenSection?.(sectionId)}
+                    onMouseEnter={() => { setHoverHead(sectionId); onHoverSection?.(sectionId); }}
+                    onMouseLeave={() => { setHoverHead((h) => (h === sectionId ? null : h)); onHoverSection?.(null); }}
+                    className="mag-heading-zoom"
+                    title="Zoom into this section's structure"
+                    style={{
+                      display: "inline-flex", alignItems: "center", gap: 10, cursor: "zoom-in",
+                      border: "none", padding: "2px 6px", margin: "-2px -6px", textAlign: "left",
+                      font: "inherit", color: "inherit",
+                      borderRadius: "var(--radius-sm)",
+                      background: hoverHead === sectionId ? "var(--accent-tint)" : "transparent",
+                      boxShadow: hoverHead === sectionId ? "inset 0 -0.06em 0 var(--accent-soft)" : "none",
+                      transition: "background 130ms ease",
+                    }}
+                  >
+                    <h2 style={{ fontSize: "var(--text-h2)", lineHeight: "var(--leading-snug)", margin: 0, fontWeight: "var(--weight-semibold)", color: hoverHead === sectionId ? "var(--accent)" : "inherit", transition: "color 130ms ease" }}>
+                      {section.heading}
+                    </h2>
+                    <span className="mag-heading-zoom__hint" style={{
+                      display: "inline-flex", alignItems: "center", gap: 4, flexShrink: 0,
+                      fontFamily: "var(--font-sans)", fontSize: "var(--text-caption)", fontWeight: "var(--weight-medium)",
+                      color: "var(--accent)", background: "var(--accent-tint)", border: "1px solid var(--accent-line)",
+                      padding: "3px 9px", borderRadius: "var(--radius-full)",
+                    }}>
+                      <Icon name={hoverHead === sectionId ? "zoomIn" : "layers"} size={13} /> Structure
+                    </span>
+                  </button>
+                ) : (
+                  <h2 style={{ fontSize: "var(--text-h2)", lineHeight: "var(--leading-snug)", margin: 0, fontWeight: "var(--weight-semibold)" }}>
+                    {section.heading}
+                  </h2>
+                )}
               </div>
 
-              <div className="mag-cols">
-                {paragraphs.map((para, pi) => {
+              {/* Render paragraphs as two-column blocks, but break the flow with a
+                  full-width figure right after the paragraph that introduces it. */}
+              {(() => {
+                const out: React.ReactNode[] = [];
+                let colBuf: React.ReactNode[] = [];
+                const flush = (key: string) => {
+                  if (!colBuf.length) return;
+                  out.push(<div className="mag-cols" key={`cols-${key}`}>{colBuf}</div>);
+                  colBuf = [];
+                };
+                paragraphs.forEach((para, pi) => {
+                  const figs = FIGURES.filter((f) => para.some((s) => s.id === f.afterSegment));
                   const dropcap = !firstParaDone;
                   firstParaDone = true;
-                  return (
+                  colBuf.push(
                     <p key={pi} className={`mag-p${dropcap ? " mag-dropcap" : ""}`}>
                       {para.map((seg) => (
                         <SegmentSpan
@@ -92,23 +140,30 @@ export function MagazineReader({
                           onHover={onHoverSegment}
                         />
                       ))}
+                      {figs.map((f) => (
+                        <span key={f.src} className="mag-figref">{` (${f.label})`}</span>
+                      ))}
                     </p>
                   );
-                })}
-              </div>
+                  if (figs.length) {
+                    flush(`p${pi}`);
+                    figs.forEach((fig) => out.push(
+                      <figure key={fig.src} className={`mag-figure${fig.portrait ? " mag-portrait" : ""}`}>
+                        <img src={fig.src} alt={`${fig.label}: ${fig.caption}`} />
+                        <figcaption className="mag-figcaption">
+                          <b>{fig.label}</b> &nbsp;{fig.caption}
+                        </figcaption>
+                      </figure>
+                    ));
+                  }
+                });
+                flush("end");
+                return out;
+              })()}
 
               {PULLQUOTES[sectionId] && (
                 <blockquote className="mag-pullquote">{PULLQUOTES[sectionId]}</blockquote>
               )}
-
-              {figuresAfter(sectionId).map((fig) => (
-                <figure key={fig.src} className={`mag-figure${fig.portrait ? " mag-portrait" : ""}`}>
-                  <img src={fig.src} alt={`${fig.label}: ${fig.caption}`} />
-                  <figcaption className="mag-figcaption">
-                    <b>{fig.label}</b> &nbsp;{fig.caption}
-                  </figcaption>
-                </figure>
-              ))}
             </section>
           );
         })}
