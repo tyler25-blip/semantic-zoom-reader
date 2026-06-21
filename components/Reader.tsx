@@ -3,15 +3,11 @@ import React from "react";
 import { AnimatePresence } from "framer-motion";
 import type { Paper, DomainId } from "@/lib/types";
 import { Icon } from "./ds/Icons";
-import { Badge } from "./ds/Badge";
-import { SkeletonReader } from "./SkeletonReader";
 import { MagazineReader } from "./MagazineReader";
 import { ZoomLayer } from "./ZoomLayer";
 import { OriginalMode } from "./OriginalMode";
 import { SectionMap } from "./SectionMap";
 import { OUTLINES, type OutlineNode } from "@/lib/outline";
-
-type Layout = "column" | "magazine";
 
 // Depth axis (deepening): 5% skeleton → "augmented" (150%) → "annotation-detail" → "original" (clean 100%)
 export type ZoomLevel = "augmented" | "annotation-detail" | "original";
@@ -30,7 +26,6 @@ export function Reader({
   onEditBackground: () => void;
 }) {
   const [fullOriginal, setFullOriginal] = React.useState(false);
-  const [layout, setLayout] = React.useState<Layout>("column");
   const [zoomSegment, setZoomSegment] = React.useState<string | null>(null);
   const [zoomLevel, setZoomLevel] = React.useState<ZoomLevel>("augmented");
   const [hovered, setHovered] = React.useState<string | null>(null);
@@ -153,27 +148,6 @@ export function Reader({
           </span>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-          {!fullOriginal && (
-            <div style={{ display: "inline-flex", padding: 3, gap: 2, background: "var(--surface-sunken)", borderRadius: "var(--radius-md)", marginRight: 4 }}>
-              {([["column", "book", "Column"], ["magazine", "layers", "Magazine"]] as const).map(([key, icon, label]) => (
-                <button
-                  key={key}
-                  onClick={() => setLayout(key)}
-                  title={`${label} layout`}
-                  style={{
-                    display: "inline-flex", alignItems: "center", gap: 6, padding: "5px 10px",
-                    borderRadius: "var(--radius-sm)", border: "none", cursor: "pointer",
-                    fontSize: "var(--text-caption)", fontWeight: "var(--weight-medium)",
-                    background: layout === key ? "var(--surface)" : "transparent",
-                    color: layout === key ? "var(--accent)" : "var(--text-muted)",
-                    boxShadow: layout === key ? "var(--shadow-sm)" : "none",
-                  }}
-                >
-                  <Icon name={icon} size={15} />{label}
-                </button>
-              ))}
-            </div>
-          )}
           <button style={iconBtn} onClick={onEditBackground} aria-label="Edit background" title="Edit your background"><Icon name="settings" size={19} /></button>
           <button style={iconBtn} onClick={onToggleDark} aria-label="Theme" title="Toggle theme"><Icon name={dark ? "sun" : "moon"} size={19} /></button>
           <button
@@ -192,27 +166,10 @@ export function Reader({
         </div>
       </header>
 
-      {!fullOriginal && layout === "column" && (
-        <div style={{ padding: "28px 24px 16px", borderBottom: "1px solid var(--border)", maxWidth: 760, width: "100%", margin: "0 auto", boxSizing: "border-box" }}>
-          <div style={{ display: "flex", gap: 8, marginBottom: 12, flexWrap: "wrap" }}>
-            {paper.meta.badges.map((b, i) => <Badge key={b} tone={i === 0 ? "soft" : "default"}>{b}</Badge>)}
-            <Badge tone="soft">Plain · Simplified</Badge>
-          </div>
-          <h1 className="serif" style={{ fontSize: "var(--text-h1)", fontWeight: 600, lineHeight: "var(--leading-snug)", margin: 0 }}>
-            {paper.meta.title}
-          </h1>
-          <p style={{ fontSize: "var(--text-annotation)", color: "var(--text-muted)", margin: "10px 0 0", maxWidth: "60ch" }}>
-            You're reading the plain-language skeleton. Click — or pinch — any sentence to zoom into the AI assist layer, then again for the clean original.
-          </p>
-        </div>
-      )}
-
       {fullOriginal ? (
         <OriginalMode paper={paper} />
-      ) : layout === "magazine" ? (
-        <MagazineReader paper={paper} unfamiliar={unfamiliar} onOpenSegment={openSegment} onHoverSegment={setHovered} activeSegment={zoomSegment} flashSegment={flashSegment} onOpenSection={openSection} onHoverSection={setHoveredSection} hasOutline={(id) => !!OUTLINES[id]} />
       ) : (
-        <SkeletonReader paper={paper} unfamiliar={unfamiliar} onOpenSegment={openSegment} onHoverSegment={setHovered} activeSegment={zoomSegment} flashSegment={flashSegment} />
+        <MagazineReader paper={paper} unfamiliar={unfamiliar} onOpenSegment={openSegment} onHoverSegment={setHovered} activeSegment={zoomSegment} flashSegment={flashSegment} onOpenSection={openSection} onHoverSection={setHoveredSection} hasOutline={(id) => !!OUTLINES[id]} />
       )}
 
       <AnimatePresence>
